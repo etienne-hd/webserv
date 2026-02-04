@@ -1,31 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Request.hpp                                        :+:      :+:    :+:   */
+/*   Method.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/04 18:32:03 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/04 18:47:27 by ehode            ###   ########.fr       */
+/*   Created: 2026/02/04 18:44:56 by ehode             #+#    #+#             */
+/*   Updated: 2026/02/04 18:48:21 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef REQUEST_HPP
-# define REQUEST_HPP
+#ifndef METHOD_HPP
+# define METHOD_HPP
 
-#include "Cookies.hpp"
-#include "Headers.hpp"
-#include "Method.hpp"
-
-#include <string>
-
-class Request {
-	private:
-		Method		_method;
-		std::string	_path;
-		Headers		_headers;
-		Cookies		_cookies;
-		std::string	_content;
+enum Method {
+	GET,
+	HEAD,
+	POST,
+	PUT,
+	DELETE,
+	CONNECT,
+	OPTIONS,
+	TRACE,
+	PATCH
 };
 
 #endif

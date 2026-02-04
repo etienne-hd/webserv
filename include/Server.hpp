@@ -6,8 +6,13 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/04 18:30:31 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/04 18:30:44 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/04 18:48:59 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#ifndef SERVER_HPP
+# define SERVER_HPP
+
 class Server {};
+
+#endif

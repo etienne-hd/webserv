@@ -6,8 +6,13 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/04 18:33:26 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/04 18:34:01 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/04 18:47:47 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#ifndef COOKIES_HPP
+# define COOKIES_HPP
+
 class Cookies {};
+
+#endif
