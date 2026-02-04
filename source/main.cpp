@@ -6,13 +6,13 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/04 18:29:17 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/04 18:29:54 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/05 00:11:59 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <iostream>
+#include "Logger.hpp"
 
 int	main(void) {
-	std::cout << "Hello, World" << std::endl;
+	logger.info("Hello, World");
 	return (0);
 }
