@@ -6,13 +6,14 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/04 22:59:59 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/05 00:07:08 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/05 00:23:33 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Logger.hpp"
 #include <ctime>
 #include <fstream>
+#include <ios>
 #include <iostream>
 
 Logger logger(DEBUG);
@@ -32,7 +33,7 @@ Logger::Logger(Level level) {
 	std::string fileName = "log/";
 	fileName.append(getFormatedTime("%Y-%m-%d_%H-%M-%S"));
 	fileName.append(".log");
-	_file.open(fileName.c_str());
+	_file.open(fileName.c_str(), std::ios::app);
 	if (!_file.is_open())
 		this->error("Unable to open log file.");
 }
