@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/04 18:32:03 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/05 00:27:15 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/05 21:47:23 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include "Headers.hpp"
 
 # include <string>
+# include <map>
 
 enum Method {
 	GET,
@@ -32,11 +33,12 @@ enum Method {
 
 class Request {
 	private:
-		Method		_method;
+		Method _method;
 		std::string	_path;
-		Headers		_headers;
-		Cookies		_cookies;
-		std::string	_content;
+		Headers _headers;
+		Cookies _cookies;
+		std::map<std::string, std::string> _parameters;
+		std::string _content;
 };
 
 #endif

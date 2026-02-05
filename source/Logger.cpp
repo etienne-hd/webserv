@@ -6,14 +6,14 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/04 22:59:59 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/05 20:31:01 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/05 21:42:48 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+# include "Logger.hpp"
+
 # include <ctime>
 # include <iostream>
-
-# include "Logger.hpp"
 
 Logger logger(DEBUG);
 
