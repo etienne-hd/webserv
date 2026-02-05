@@ -3,7 +3,7 @@ keepalive_timeout = 30
 max_request_size = 65536
 listen = "0.0.0.0:8080"
 locations = { "/" = "./examples/nolan", "/tmp" = "/tmp" }
-document_index = index.html
+document_index = "index.html"
 error_pages = { 404 = "404.html", 429 = "429.html"}
 allowed_methods = ["GET", "POST"]
 redirections = { "/redirection1" = "https://youtube.com/", "/redirection2" = "https://instagram.com/" }
@@ -19,7 +19,7 @@ keepalive_timeout = 15
 max_request_size = 32768
 listen = "0.0.0.0:6767"
 locations = { "/" = "./examples/etienne", "/tmp" = "/tmp" }
-document_index = index.html
+document_index = "index.html"
 error_pages = { 404 = "404.html", 429 = "429.html"}
 allowed_methods = ["GET", "POST"]
 redirections = { "/fortnite" = "https://fortnite.com/", "/roblox" = "https://roblox.com/" }
