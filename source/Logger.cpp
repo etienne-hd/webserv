@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/04 22:59:59 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/05 20:26:37 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/05 20:31:01 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,9 +94,9 @@ void Logger::log(Level level, std::string const &message) {
 	std::string color = getColor(level);
 
 	if (level == ERROR || level == CRITICAL)
-		std::cerr << "[" << currentTime << "] " << color << "[" << levelName << "] " << RESET << message << std::endl;
+		std::cerr << "[" << currentTime << "] " << color << "[" << levelName << "]" RESET " " << message << std::endl;
 	else
-		std::cout << "[" << currentTime << "] " << color << "[" << levelName << "] " << RESET << message << std::endl;
+		std::cout << "[" << currentTime << "] " << color << "[" << levelName << "]" RESET " " << message << std::endl;
 	if (_file.is_open())
 		_file << "[" << currentTime << "] " << "[" << levelName << "] " << message << std::endl;
 }
