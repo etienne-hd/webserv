@@ -2,7 +2,7 @@
 keepalive_timeout = 30
 max_request_size = 65536
 listen = "0.0.0.0:8080"
-location = "./examples/nolan"
+locations = { "/" = "./examples/nolan", "/tmp" = "/tmp" }
 document_index = index.html
 error_pages = { 404 = "404.html", 429 = "429.html"}
 allowed_methods = ["GET", "POST"]
@@ -18,7 +18,7 @@ cgi = {".js" = "/bin/nodejs"}
 keepalive_timeout = 15
 max_request_size = 32768
 listen = "0.0.0.0:6767"
-location = "./examples/etienne"
+locations = { "/" = "./examples/etienne", "/tmp" = "/tmp" }
 document_index = index.html
 error_pages = { 404 = "404.html", 429 = "429.html"}
 allowed_methods = ["GET", "POST"]
