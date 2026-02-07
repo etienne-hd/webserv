@@ -1,33 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ServerManager.hpp                                  :+:      :+:    :+:   */
+/*   ServerManager.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/07 04:12:16 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/07 22:54:08 by ehode            ###   ########.fr       */
+/*   Created: 2026/02/07 22:51:27 by ehode             #+#    #+#             */
+/*   Updated: 2026/02/07 22:52:10 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef SERVERMANAGER_HPP
-# define SERVERMANAGER_HPP
+#include "ServerManager.hpp"
 
-# include "Server.hpp"
+#include <vector>
 
-# include <vector>
-
-class ServerManager {
-	private:
-		std::vector<Server> &_servers;
-	
-	public:
-		ServerManager(std::vector<Server> &servers);
-
-		// run function
-		// open server socket
-		// use select to manage fd when it come to read / write it
-		void run(void);
-};
-
-#endif
+ServerManager::ServerManager(std::vector<Server> &servers): _servers(servers) {}

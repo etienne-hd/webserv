@@ -9,6 +9,7 @@ SRCS = $(SRC_DIR)main.cpp \
 	$(SRC_DIR)JSON/JSONUtils.cpp \
 	$(SRC_DIR)Config.cpp \
 	$(SRC_DIR)Server.cpp \
+	$(SRC_DIR)ServerManager.cpp \
 	$(SRC_DIR)Method.cpp
 
 OBJ_DIR = .build/
