@@ -1,0 +1,92 @@
+[
+	{
+		"name": "site de nolan",
+		"keepalive_timeout": 30,
+		"max_request_size": 65536,
+		"listen": "0.0.0.0:8080",
+		"locations": [
+			{
+				"uri": "/",
+				"path": "./examples/nolan"
+			},
+			{
+				"uri": "/error",
+				"path": "./examples/error"
+			}
+		],
+		"document_index": "index.html",
+		"error_pages": [
+			{
+				"error_code": 404,
+				"path": "/error/404.html"
+			},
+			{
+				"error_code": 429,
+				"path": "/error/429.html"
+			}
+		],
+		"allowed_methods": ["GET", "POST"],
+		"redirections": [
+			{
+				"uri": "/youtube",
+				"redirect": "https://youtube.com"
+			}
+		],
+		"directory_listing_enabled": true,
+		"file_on_directory": "/file_on_directory.html",
+		"file_upload_enabled": true,
+		"file_upload_directory": "./files",
+		"cgi_enabled": true,
+		"cgi_rules": [
+			{
+				"extension": ".js",
+				"path": "/bin/nodejs"
+			}
+		]
+	},
+	{
+		"name": "site d'etienne",
+		"keepalive_timeout": 67,
+		"max_request_size": 32768,
+		"listen": "0.0.0.0:6767",
+		"locations": [
+			{
+				"uri": "/",
+				"path": "./examples/etienne"
+			},
+			{
+				"uri": "/error",
+				"path": "./examples/error"
+			}
+		],
+		"document_index": "index.html",
+		"error_pages": [
+			{
+				"error_code": 404,
+				"path": "/error/404.html"
+			},
+			{
+				"error_code": 429,
+				"path": "/error/429.html"
+			}
+		],
+		"allowed_methods": ["GET", "POST", "DELETE"],
+		"redirections": [
+			{
+				"uri": "/fortnite",
+				"redirect": "https://fortnite.com/"
+			}
+		],
+		"directory_listing_enabled": true,
+		"file_on_directory": "/file_on_directory.html",
+		"file_upload_enabled": false,
+		"file_upload_directory": "./files",
+		"cgi_enabled": true,
+		"cgi_rules": [
+			{
+				"extension": ".py",
+				"path": "/bin/python"
+			}
+		]
+	}
+]

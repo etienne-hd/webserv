@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/07 20:49:43 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/07 22:10:38 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/07 22:14:44 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -176,11 +176,13 @@ std::vector<Config> Config::getConfigs(std::string data) {
 	try {
 		JSONReader reader(data);
 		std::vector<JSONReader> values = reader.values();
+		if (values.empty())
+			throw std::runtime_error("provided configuration is empty.");
 		for (std::vector<JSONReader>::iterator value = values.begin(); value != values.end(); value++) {
 			configs.push_back(getConfig(*value));
 		}
 	} catch (JSONReader::InvalidJSON &e) {
-		throw std::runtime_error("provided json is not a valid json.");
+		throw std::runtime_error("provided configuration is not a valid json.");
 	} catch (JSONReader::InvalidConversion &e) {
 		throw std::runtime_error("unexpected value type.");
 	} catch (JSONReader::JSONReaderError &e) {
