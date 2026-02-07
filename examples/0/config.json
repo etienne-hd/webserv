@@ -18,11 +18,11 @@
 		"error_pages": [
 			{
 				"error_code": 404,
-				"page": "/error/404.html"
+				"path": "/error/404.html"
 			},
 			{
 				"error_code": 429,
-				"page": "/error/429.html"
+				"path": "/error/429.html"
 			}
 		],
 		"allowed_methods": ["GET", "POST"],
@@ -63,11 +63,11 @@
 		"error_pages": [
 			{
 				"error_code": 404,
-				"page": "/error/404.html"
+				"path": "/error/404.html"
 			},
 			{
 				"error_code": 429,
-				"page": "/error/429.html"
+				"path": "/error/429.html"
 			}
 		],
 		"allowed_methods": ["GET", "POST", "DELETE"],

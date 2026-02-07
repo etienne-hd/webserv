@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/05 21:58:20 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/07 04:08:12 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/07 21:40:52 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define CONFIG_HPP
 
 # include "Method.hpp"
+# include "JSONReader.hpp"
 
 # include <string>
 # include <map>
@@ -21,35 +22,45 @@
 
 class Config {
 	private:
-		std::string							_name;
-		unsigned int						_keepalive_timeout;
-		unsigned int						_max_request_size;
-		std::string							_listen;
-		std::map<std::string, std::string>	_locations;
-		std::string							_document_index;
-		std::map<int, std::string>			_error_pages;
-		std::vector<Method>					_allowed_methods;
-		std::map<std::string, std::string>	_redirections;
-		bool								_directory_listing_enabled;
-		std::string							_file_upload_directory;
-		bool								_cgi_enabled;
-		std::map<std::string, std::string>	_cgi_rules;
+		Config(
+			std::string name,
+			unsigned int keepalive_timeout,
+			unsigned int max_request_size,
+			std::string listen,
+			std::map<std::string,
+			std::string> locations,
+			std::string document_index,
+			std::map<int, std::string> error_pages,
+			std::vector<Method> allowed_methods,
+			std::map<std::string,
+			std::string> redirections,
+			bool directory_listing_enabled,
+			std::string file_on_directory,
+			bool file_upload_enabled,
+			std::string file_upload_directory,
+			bool cgi_enabled,
+			std::map<std::string, std::string> cgi_rules
+		);
 
+		static Config getConfig(JSONReader config);
 	public:
-		// getter
-		std::string getName(void) const { return _name; }
-		unsigned int getKeepaliveTimeout(void) const { return _keepalive_timeout; }
-		unsigned int getMaxRequestSize(void) const { return _max_request_size; }
-		std::string	getListenInterface(void) const { return _listen; }
-		std::map<std::string, std::string> getLocations(void) const { return _locations; }
-		std::string getDocumentIndex(void) const { return _document_index; }
-		std::map<int, std::string> getErrorPages(void) const { return _error_pages; }
-		std::vector<Method> getAllowedMethods(void) const { return _allowed_methods; } 
-		std::map<std::string, std::string> getRedirections(void) const { return _redirections; }
-		bool isDirectoryListingEnabled(void) const { return _directory_listing_enabled; }
-		std::string getFileUploadDirectory(void) const { return _file_upload_directory; }
-		bool isCgiEnabled(void) const { return _cgi_enabled; }
-		std::map<std::string, std::string> getCgiRules(void) const { return _cgi_rules; }
+		const std::string							name;
+		const unsigned int							keepalive_timeout;
+		const unsigned int							max_request_size;
+		const std::string							listen;
+		const std::map<std::string, std::string>	locations;
+		const std::string							document_index;
+		const std::map<int, std::string>			error_pages;
+		const std::vector<Method>					allowed_methods;
+		const std::map<std::string, std::string>	redirections;
+		const bool									directory_listing_enabled;
+		const std::string							file_on_directory;
+		const bool									file_upload_enabled;
+		const std::string							file_upload_directory;
+		const bool									cgi_enabled;
+		const std::map<std::string, std::string>	cgi_rules;
+
+		static std::vector<Config> getConfigs(std::string data);
 };
 
 #endif

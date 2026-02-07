@@ -1,0 +1,195 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   Config.cpp                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/02/07 20:49:43 by ehode             #+#    #+#             */
+/*   Updated: 2026/02/07 22:10:38 by ehode            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "Config.hpp"
+#include "JSONReader.hpp"
+#include "Method.hpp"
+
+#include <exception>
+#include <stdexcept>
+#include <vector>
+
+Config::Config(
+	std::string name,
+	unsigned int keepalive_timeout,
+	unsigned int max_request_size,
+	std::string listen,
+	std::map<std::string, std::string> locations,
+	std::string document_index,
+	std::map<int, std::string> error_pages,
+	std::vector<Method> allowed_methods,
+	std::map<std::string, std::string> redirections,
+	bool directory_listing_enabled,
+	std::string file_on_directory,
+	bool file_upload_enabled,
+	std::string file_upload_directory,
+	bool cgi_enabled,
+	std::map<std::string, std::string> cgi_rules
+):
+name(name),
+keepalive_timeout(keepalive_timeout), 
+max_request_size(max_request_size),
+listen(listen), locations(locations),
+document_index(document_index),
+error_pages(error_pages),
+allowed_methods(allowed_methods),
+redirections(redirections),
+directory_listing_enabled(directory_listing_enabled),
+file_on_directory(file_on_directory),
+file_upload_enabled(file_upload_enabled),
+file_upload_directory(file_upload_directory),
+cgi_enabled(cgi_enabled),
+cgi_rules(cgi_rules) {}
+
+Config Config::getConfig(JSONReader config) {
+	const char *requiredKeys[] = {
+		"name",
+		"listen",
+		"locations",
+		NULL
+	};
+	std::vector<std::string> keys = config.keys();
+	
+	// Check required keys
+	for (unsigned int i = 0; requiredKeys[i] != __null ; i++) {
+		const char *requiredKey = requiredKeys[i];
+		std::vector<std::string>::iterator key = keys.begin();
+		for (; key != keys.end(); key++) {
+			if (*key == requiredKey)
+				break;
+		}
+		if (key == keys.end())
+			throw std::runtime_error(std::string("The key ") + requiredKey + " is required!");
+	}
+	
+	// Init variable
+	std::string							name;
+	std::string							listen;
+	std::map<std::string, std::string>	locations;
+	
+	unsigned int						keepalive_timeout = 30;
+	unsigned int						max_request_size = 32768;
+	std::string							document_index = "index.html";
+	std::map<int, std::string>			error_pages;
+	std::vector<Method>					allowed_methods;
+	allowed_methods.push_back(GET);
+	allowed_methods.push_back(POST);
+	allowed_methods.push_back(DELETE);
+	std::map<std::string, std::string>	redirections;
+	bool								directory_listing_enabled = false;
+	std::string							file_on_directory = "directory.html";
+	bool								file_upload_enabled = false;
+	std::string							file_upload_directory = ".";
+	bool								cgi_enabled = false;
+	std::map<std::string, std::string>	cgi_rules;
+
+	for (std::vector<std::string>::iterator key = keys.begin(); key != keys.end(); key++) {
+		if (*key == "name")
+			name = config["name"].toString();
+		else if (*key == "listen")
+			listen = config["listen"].toString();
+		else if (*key == "locations") {
+			std::vector<JSONReader> values = config["locations"].values();
+			for (std::vector<JSONReader>::iterator value = values.begin(); value != values.end(); value++) {
+				locations[(*value)["uri"].toString()] = (*value)["path"].toString();
+			}
+		} else if (*key == "keepalive_timeout")
+			keepalive_timeout = config["keepalive_timeout"].toInt();
+		else if (*key == "max_request_size")
+			max_request_size = config["max_request_size"].toInt();
+		else if (*key == "document_index")
+			document_index = config["document_index"].toString();
+		else if (*key == "error_pages") {
+			std::vector<JSONReader> values = config["error_pages"].values();
+			for (std::vector<JSONReader>::iterator value = values.begin(); value != values.end(); value++) {
+				error_pages[(*value)["error_code"].toInt()] = (*value)["path"].toString();
+			}
+		} else if (*key == "allowed_methods") {
+			allowed_methods.clear();
+			std::vector<JSONReader> values = config["allowed_methods"].values();
+			for (std::vector<JSONReader>::iterator value = values.begin(); value != values.end(); value++) {
+				if (value->toString() == "GET")
+					allowed_methods.push_back(GET);
+				else if (value->toString() == "POST")
+					allowed_methods.push_back(POST);
+				else if (value->toString() == "DELETE")
+					allowed_methods.push_back(DELETE);
+				else
+					std::runtime_error("Invalid value in allowed_methods.");
+			}
+		} else if (*key == "redirections") {
+			std::vector<JSONReader> values = config["redirections"].values();
+			for (std::vector<JSONReader>::iterator value = values.begin(); value != values.end(); value++) {
+				redirections[(*value)["uri"].toString()] = (*value)["redirect"].toString();
+			}
+		} else if (*key == "directory_listing_enabled") 
+			directory_listing_enabled = config["directory_listing_enabled"].toBool();
+		else if (*key == "file_on_directory")
+			file_on_directory = config["file_on_directory"].toString();
+		else if (*key == "file_upload_enabled")
+			file_upload_enabled = config["file_upload_enabled"].toBool();
+		else if (*key == "file_upload_directory")
+			file_upload_directory = config["file_upload_directory"].toString();
+		else if (*key == "cgi_enabled")
+			cgi_enabled = config["cgi_enabled"].toBool();
+		else if (*key == "cgi_rules") {
+			std::vector<JSONReader> values = config["cgi_rules"].values();
+			for (std::vector<JSONReader>::iterator value = values.begin(); value != values.end(); value++) {
+				cgi_rules[(*value)["extension"].toString()] = (*value)["path"].toString();
+			}
+		} else {
+			throw std::runtime_error(std::string("Unknown key '") + *key + "'.");
+		}
+	}
+
+	return (Config(
+		name,
+		keepalive_timeout,
+		max_request_size,
+		listen,
+		locations,
+		document_index,
+		error_pages,
+		allowed_methods,
+		redirections,
+		directory_listing_enabled,
+		file_on_directory,
+		file_upload_enabled,
+		file_upload_directory,
+		cgi_enabled,
+		cgi_rules
+	));
+}
+
+std::vector<Config> Config::getConfigs(std::string data) {
+	std::vector<Config> configs;
+
+	try {
+		JSONReader reader(data);
+		std::vector<JSONReader> values = reader.values();
+		for (std::vector<JSONReader>::iterator value = values.begin(); value != values.end(); value++) {
+			configs.push_back(getConfig(*value));
+		}
+	} catch (JSONReader::InvalidJSON &e) {
+		throw std::runtime_error("provided json is not a valid json.");
+	} catch (JSONReader::InvalidConversion &e) {
+		throw std::runtime_error("unexpected value type.");
+	} catch (JSONReader::JSONReaderError &e) {
+		throw std::runtime_error("provided json contains invalid configuration.");
+	} catch (std::exception &e) {
+		throw std::runtime_error(e.what());
+	}
+
+	// TODO: Data validation
+	// check if the same interface is set on multiple server
+	return (configs);
+}
