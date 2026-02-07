@@ -1,23 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Server.hpp                                         :+:      :+:    :+:   */
+/*   Method.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/04 18:30:31 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/05 21:59:52 by ehode            ###   ########.fr       */
+/*   Created: 2026/02/07 04:06:35 by ehode             #+#    #+#             */
+/*   Updated: 2026/02/07 04:06:45 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef SERVER_HPP
-# define SERVER_HPP
+#ifndef METHOD_HPP
+# define METHOD_HPP
 
-# include "Config.hpp"
-
-class Server {
-	private:
-		const Config _config;
+enum Method {
+	GET,
+	HEAD,
+	POST,
+	PUT,
+	DELETE,
+	CONNECT,
+	OPTIONS,
+	TRACE,
+	PATCH
 };
 
 #endif
