@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/07 20:49:43 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/07 22:14:44 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/07 22:47:03 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,14 +50,14 @@ file_upload_directory(file_upload_directory),
 cgi_enabled(cgi_enabled),
 cgi_rules(cgi_rules) {}
 
-Config Config::getConfig(JSONReader config) {
+Config Config::getConfig(JSONReader reader) {
 	const char *requiredKeys[] = {
 		"name",
 		"listen",
 		"locations",
 		NULL
 	};
-	std::vector<std::string> keys = config.keys();
+	std::vector<std::string> keys = reader.keys();
 	
 	// Check required keys
 	for (unsigned int i = 0; requiredKeys[i] != __null ; i++) {
@@ -94,55 +94,48 @@ Config Config::getConfig(JSONReader config) {
 
 	for (std::vector<std::string>::iterator key = keys.begin(); key != keys.end(); key++) {
 		if (*key == "name")
-			name = config["name"].toString();
+			name = reader["name"].toString();
 		else if (*key == "listen")
-			listen = config["listen"].toString();
+			listen = reader["listen"].toString();
 		else if (*key == "locations") {
-			std::vector<JSONReader> values = config["locations"].values();
+			std::vector<JSONReader> values = reader["locations"].values();
 			for (std::vector<JSONReader>::iterator value = values.begin(); value != values.end(); value++) {
 				locations[(*value)["uri"].toString()] = (*value)["path"].toString();
 			}
 		} else if (*key == "keepalive_timeout")
-			keepalive_timeout = config["keepalive_timeout"].toInt();
+			keepalive_timeout = reader["keepalive_timeout"].toInt();
 		else if (*key == "max_request_size")
-			max_request_size = config["max_request_size"].toInt();
+			max_request_size = reader["max_request_size"].toInt();
 		else if (*key == "document_index")
-			document_index = config["document_index"].toString();
+			document_index = reader["document_index"].toString();
 		else if (*key == "error_pages") {
-			std::vector<JSONReader> values = config["error_pages"].values();
+			std::vector<JSONReader> values = reader["error_pages"].values();
 			for (std::vector<JSONReader>::iterator value = values.begin(); value != values.end(); value++) {
 				error_pages[(*value)["error_code"].toInt()] = (*value)["path"].toString();
 			}
 		} else if (*key == "allowed_methods") {
 			allowed_methods.clear();
-			std::vector<JSONReader> values = config["allowed_methods"].values();
+			std::vector<JSONReader> values = reader["allowed_methods"].values();
 			for (std::vector<JSONReader>::iterator value = values.begin(); value != values.end(); value++) {
-				if (value->toString() == "GET")
-					allowed_methods.push_back(GET);
-				else if (value->toString() == "POST")
-					allowed_methods.push_back(POST);
-				else if (value->toString() == "DELETE")
-					allowed_methods.push_back(DELETE);
-				else
-					std::runtime_error("Invalid value in allowed_methods.");
+				allowed_methods.push_back(getMethodFromString(value->toString()));
 			}
 		} else if (*key == "redirections") {
-			std::vector<JSONReader> values = config["redirections"].values();
+			std::vector<JSONReader> values = reader["redirections"].values();
 			for (std::vector<JSONReader>::iterator value = values.begin(); value != values.end(); value++) {
 				redirections[(*value)["uri"].toString()] = (*value)["redirect"].toString();
 			}
 		} else if (*key == "directory_listing_enabled") 
-			directory_listing_enabled = config["directory_listing_enabled"].toBool();
+			directory_listing_enabled = reader["directory_listing_enabled"].toBool();
 		else if (*key == "file_on_directory")
-			file_on_directory = config["file_on_directory"].toString();
+			file_on_directory = reader["file_on_directory"].toString();
 		else if (*key == "file_upload_enabled")
-			file_upload_enabled = config["file_upload_enabled"].toBool();
+			file_upload_enabled = reader["file_upload_enabled"].toBool();
 		else if (*key == "file_upload_directory")
-			file_upload_directory = config["file_upload_directory"].toString();
+			file_upload_directory = reader["file_upload_directory"].toString();
 		else if (*key == "cgi_enabled")
-			cgi_enabled = config["cgi_enabled"].toBool();
+			cgi_enabled = reader["cgi_enabled"].toBool();
 		else if (*key == "cgi_rules") {
-			std::vector<JSONReader> values = config["cgi_rules"].values();
+			std::vector<JSONReader> values = reader["cgi_rules"].values();
 			for (std::vector<JSONReader>::iterator value = values.begin(); value != values.end(); value++) {
 				cgi_rules[(*value)["extension"].toString()] = (*value)["path"].toString();
 			}

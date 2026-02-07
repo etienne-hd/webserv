@@ -1,32 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Method.hpp                                         :+:      :+:    :+:   */
+/*   Method.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/07 04:06:35 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/07 22:46:22 by ehode            ###   ########.fr       */
+/*   Created: 2026/02/07 22:45:36 by ehode             #+#    #+#             */
+/*   Updated: 2026/02/07 22:46:30 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef METHOD_HPP
-# define METHOD_HPP
+#include "Method.hpp"
 
-#include "string"
+#include <stdexcept>
 
-enum Method {
-	GET,
-	//HEAD,
-	POST,
-	//PUT,
-	DELETE,
-	//CONNECT,
-	//OPTIONS,
-	//TRACE,
-	//PATCH
-};
-
-Method getMethodFromString(const std::string &s);
-
-#endif
+Method getMethodFromString(const std::string &s) {
+	if (s == "GET")
+		return (GET);
+	else if (s == "POST")
+		return (POST);
+	else if (s == "DELETE")
+		return (DELETE);
+	else
+		throw std::runtime_error(std::string("Invalid Method: ") + s);
+}

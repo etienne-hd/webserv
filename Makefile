@@ -7,7 +7,9 @@ SRCS = $(SRC_DIR)main.cpp \
 	$(SRC_DIR)Logger.cpp \
 	$(SRC_DIR)JSON/JSONReader.cpp \
 	$(SRC_DIR)JSON/JSONUtils.cpp \
-	$(SRC_DIR)Config.cpp
+	$(SRC_DIR)Config.cpp \
+	$(SRC_DIR)Server.cpp \
+	$(SRC_DIR)Method.cpp
 
 OBJ_DIR = .build/
 OBJS = $(SRCS:$(SRC_DIR)%.cpp=$(OBJ_DIR)%.o)
