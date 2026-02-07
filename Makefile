@@ -4,7 +4,9 @@ NAME = webserv
 SRC_DIR = source/
 LOG_DIR = log/
 SRCS = $(SRC_DIR)main.cpp \
-	$(SRC_DIR)Logger.cpp
+	$(SRC_DIR)Logger.cpp \
+	$(SRC_DIR)JSON/JSONReader.cpp \
+	$(SRC_DIR)JSON/JSONUtils.cpp
 
 OBJ_DIR = .build/
 OBJS = $(SRCS:$(SRC_DIR)%.cpp=$(OBJ_DIR)%.o)
@@ -17,6 +19,7 @@ $(NAME): $(OBJS)
 
 $(OBJ_DIR)%.o: $(SRC_DIR)%.cpp
 	@mkdir -p $(OBJ_DIR)
+	@mkdir -p $(OBJ_DIR)/JSON
 	$(CXX) $(CXXFLAGS) $< -c -o $@
 
 fclean: clean
