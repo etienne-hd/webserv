@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/04 18:32:03 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/09 04:28:08 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/09 04:48:50 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,10 +50,6 @@ class Request {
 		Cookies getCookies(void) const { return _cookies; }
 		std::map<std::string, std::string> getParameters(void) const { return _parameters; }
 		std::string getContent(void) const { return _content; }
-
-		class ClientDisconnected: public std::exception {
-			virtual const char *what(void) const throw() { return "Client disconnected."; }
-		};
 };
 
 #endif
