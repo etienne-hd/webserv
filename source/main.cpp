@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/04 18:29:17 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/07 22:51:05 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/09 01:19:18 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include "Config.hpp"
 #include "Server.hpp"
 #include "ServerManager.hpp"
+#include "utils.hpp"
 
 #include <exception>
 #include <fstream>
@@ -37,22 +38,26 @@ int	main(int argc, char **argv) {
 		return (1);
 	}
 
+	std::vector<Server *> servers;
 	try {
 		std::string rawConfig = readFile(argv[1]);
 		std::vector<Config> configs = Config::getConfigs(rawConfig);
-
-		std::vector<Server> servers;
 		for (std::vector<Config>::iterator config = configs.begin(); config != configs.end(); config++) {
-			Server server(*config);
-			servers.push_back(server);
+			servers.push_back(new Server(*config));
 		}
-		
-		ServerManager manager(servers);
-		//manager.run();
-
 	} catch (std::exception &e) {
+		logger << ERROR << "Config Error: " << e.what() << ENDL;
+		return (1);
+	}
+
+	try {
+		ServerManager manager(servers);
+		manager.run();
+	} catch (std::exception &e) {
+		delete_vector(servers);
 		logger << ERROR << "Error: " << e.what() << ENDL;
 		return (1);
 	}
+	delete_vector(servers);
 	return (0);
 }

@@ -6,13 +6,14 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/07 20:49:43 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/07 22:47:03 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/09 00:41:18 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Config.hpp"
 #include "JSONReader.hpp"
 #include "Method.hpp"
+#include "utils.hpp"
 
 #include <exception>
 #include <stdexcept>
@@ -165,12 +166,13 @@ Config Config::getConfig(JSONReader reader) {
 
 std::vector<Config> Config::getConfigs(std::string data) {
 	std::vector<Config> configs;
-
 	try {
 		JSONReader reader(data);
 		std::vector<JSONReader> values = reader.values();
 		if (values.empty())
 			throw std::runtime_error("provided configuration is empty.");
+		if (values.size() > 10)
+			throw std::runtime_error("too many configuration.");
 		for (std::vector<JSONReader>::iterator value = values.begin(); value != values.end(); value++) {
 			configs.push_back(getConfig(*value));
 		}
@@ -183,8 +185,5 @@ std::vector<Config> Config::getConfigs(std::string data) {
 	} catch (std::exception &e) {
 		throw std::runtime_error(e.what());
 	}
-
-	// TODO: Data validation
-	// check if the same interface is set on multiple server
 	return (configs);
 }

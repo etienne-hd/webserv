@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/07 04:12:16 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/07 22:54:08 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/09 01:05:41 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,10 @@
 
 class ServerManager {
 	private:
-		std::vector<Server> &_servers;
+		std::vector<Server *> _servers;
 	
 	public:
-		ServerManager(std::vector<Server> &servers);
+		ServerManager(std::vector<Server *> servers);
 
 		// run function
 		// open server socket
