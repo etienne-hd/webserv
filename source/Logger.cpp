@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/04 22:59:59 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/05 21:42:48 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/08 23:22:00 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ std::string Logger::getColor(Level level) {
 	std::string color;
 
 	if (level == DEBUG) {
-		color = WHITE;
+		color = BLUE;
 	} else if (level == INFO) {
 		color = GREEN;
 	} else if (level == WARNING) {
