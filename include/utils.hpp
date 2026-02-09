@@ -1,0 +1,28 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils.hpp                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/02/08 19:56:16 by ehode             #+#    #+#             */
+/*   Updated: 2026/02/09 01:17:51 by ehode            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#ifndef UTILS_HPP
+# define UTILS_HPP
+# include <netinet/in.h>
+# include <string>
+
+template <typename T>
+void delete_vector(T &vector) {
+	for (typename T::iterator it = vector.begin(); it != vector.end(); it++) {
+		delete *it;
+	}
+	vector.clear();
+} 
+
+sockaddr_in getSocketAddress(std::string interface);
+
+#endif
