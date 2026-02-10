@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/07 04:12:16 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/09 18:13:43 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/10 17:44:30 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ class ServerManager {
 		std::vector<Server> _servers;
 		fd_set _master_socket;
 	
+		void closeServers(void);
 	public:
 		ServerManager(void);
 

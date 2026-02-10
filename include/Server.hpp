@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/04 18:30:31 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/10 15:48:25 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/10 17:47:53 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ class Server {
 		bool isRedirection(std::string uri) const;
 		std::string getRedirection(std::string uri) const;
 		std::string locationResolver(std::string &uri) const;
+		bool isAllowedMethod(Method method);
 
 	public:
 		Server(const Config config);
@@ -43,7 +44,8 @@ class Server {
 
 		int initSocket(void);
 		int getSocket(void) { return _socket; }
-		std::vector<Client> &getClientSockets(void) { return _clients; }
+		void closeSocket(void);
+		std::vector<Client> &getClients(void) { return _clients; }
 		void closeClient(Client &client);
 
 		const Config getConfig(void) const { return _config; }

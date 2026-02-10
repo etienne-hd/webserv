@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/09 04:28:41 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/10 16:47:28 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/10 18:17:56 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ std::string Server::getRawRequest(int clientSocket) const {
 	}
 	if (code == -1) {
 		delete[] buffer;
-		throw std::runtime_error("recv error");
+		throw std::runtime_error(std::strerror(errno));
 	}
 	buffer[code] = 0;
 	
@@ -91,4 +91,13 @@ std::string Server::locationResolver(std::string &uri) const {
 	removeDuplicateSlash(path);
 	logger << path << ENDL;
 	return path;
+}
+
+bool Server::isAllowedMethod(Method method) {
+	std::vector<Method>::const_iterator it = _config.allowed_methods.begin();
+	for (; it != _config.allowed_methods.end(); it++) {
+		if (*it == method)
+			break;
+	}
+	return (it != _config.allowed_methods.end());
 }

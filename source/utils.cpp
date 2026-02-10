@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/08 19:58:41 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/10 14:44:16 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/10 17:54:54 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ static unsigned int getAddress(std::string interface) {
 		address += value << 8 * i;
 		i++;
 	}
-	logger << DEBUG << "Address: " << addressStr << "; Binary: " << address << ENDL;
+	logger << DEBUG << "Address: " << addressStr << "; Decimal: " << address << ENDL;
 	return (address);
 }
 

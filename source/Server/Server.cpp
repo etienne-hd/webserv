@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/07 22:19:14 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/10 16:38:52 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/10 18:22:17 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,17 @@ int Server::initSocket(void) {
 	return (_socket);
 }
 
+void Server::closeSocket(void) {
+	if (_socket == -1) {
+		logger << WARNING << "Unable to close socket: socket is not init." << ENDL;
+		return;
+	}
+	if (close(_socket) == -1)
+		logger << CRITICAL << "Syscall close return -1" << ENDL;
+	else
+		logger << DEBUG << "Server socket successfully closed." << ENDL;
+}
+
 Client Server::onNewClient(void) {
 	sockaddr_in addr;
 	unsigned int addrSize = sizeof(addr);
@@ -61,13 +72,10 @@ void Server::onRequest(Client &client) {
 	Request request(rawRequest);
 	
 	Response response;
-	// check allowed method
-	//if (this->_config.allowed_methods.(request.getMethod()) == this->_config.allowed_methods.end()) {
-	//	
-	//}
-	logger << DEBUG << request.getContent() << request.getContent().length() << ENDL;
-	if (request.getContent().length() > _config.max_body_size)
-		response = getErrorResponse(413);
+	if (!this->isAllowedMethod(request.getMethod()))
+		response = this->getErrorResponse(501);
+	else if (request.getContent().length() > _config.max_body_size)
+		response = this->getErrorResponse(413);
 	else
 		response = this->getResponse(request);
 	
@@ -87,4 +95,6 @@ void Server::closeClient(Client &client) {
 	}
 	if (currentClient == _clients.end())
 		logger << ERROR << "Unable to remove " << client << " from vector." << ENDL;
+	else
+		logger << DEBUG << client << " -> Client socket successfully closed." << ENDL;
 }
