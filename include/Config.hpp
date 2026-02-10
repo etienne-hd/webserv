@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/05 21:58:20 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/07 21:40:52 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/09 17:32:38 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ class Config {
 		Config(
 			std::string name,
 			unsigned int keepalive_timeout,
-			unsigned int max_request_size,
+			unsigned int max_body_size,
 			std::string listen,
 			std::map<std::string,
 			std::string> locations,
@@ -46,7 +46,7 @@ class Config {
 	public:
 		const std::string							name;
 		const unsigned int							keepalive_timeout;
-		const unsigned int							max_request_size;
+		const unsigned int							max_body_size;
 		const std::string							listen;
 		const std::map<std::string, std::string>	locations;
 		const std::string							document_index;

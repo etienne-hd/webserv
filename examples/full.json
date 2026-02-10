@@ -2,7 +2,7 @@
 	{
 		"name": "site de nolan",
 		"keepalive_timeout": 30,
-		"max_request_size": 65536,
+		"max_body_size": 65536,
 		"listen": "0.0.0.0:8080",
 		"locations": [
 			{
@@ -47,7 +47,7 @@
 	{
 		"name": "site d'etienne",
 		"keepalive_timeout": 67,
-		"max_request_size": 32768,
+		"max_body_size": 32768,
 		"listen": "0.0.0.0:6767",
 		"locations": [
 			{
