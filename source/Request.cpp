@@ -6,14 +6,16 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/09 02:45:56 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/10 10:16:33 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/10 18:47:51 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Request.hpp"
 #include "Method.hpp"
+#include "Logger.hpp"
 
 #include <cstring>
+#include <exception>
 #include <string>
 #include <sys/socket.h>
 
@@ -27,6 +29,8 @@ static bool expectedToken(std::string &s, std::string::iterator &it, std::string
 	return (0);
 }
 
+Request::Request(void) {}
+
 Request::Request(std::string rawRequest) {
 	RequestToken currentTokenType = METHOD;
 	std::string currentToken;
@@ -34,7 +38,11 @@ Request::Request(std::string rawRequest) {
 	while (it != rawRequest.end()) {
 		if (currentTokenType == METHOD && expectedToken(rawRequest, it, " ")) {
 			_raw_method = currentToken;
-			_method = getMethodFromString(currentToken);
+			try {
+				_method = getMethodFromString(currentToken);
+			} catch (std::exception &e) {
+				throw BadRequest();
+			}
 			currentTokenType = URI;
 			currentToken.clear();
 		} else if (currentTokenType == URI && expectedToken(rawRequest, it, " ")) {
@@ -65,5 +73,7 @@ Request::Request(std::string rawRequest) {
 			it++;
 		}
 	}
+	if (currentTokenType != CONTENT)
+		throw Request::BadRequest();
 	_content = currentToken;
 }
