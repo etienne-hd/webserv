@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/09 20:17:45 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/10 13:06:35 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/10 15:07:39 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,37 @@ static std::string getStatusCodeText(int status_code) {
 
 Response::Response(void) {
 	_status_code = 200;
+	_content_type = "text/html";
+}
+
+void Response::setContentTypeByPath(std::string path) {
+	std::string extension;
+
+	for (std::string::iterator it = path.begin(); it != path.end(); it++) {
+		if (*it == '.')
+			extension.clear();
+		extension += *it;
+	}
+
+	std::map<std::string, std::string> contentTypes;
+	
+	contentTypes[".htm"] = "text/html";
+	contentTypes[".html"] = "text/html";
+	contentTypes[".json"] = "application/json";
+	contentTypes[".js"] = "text/javascript";
+	contentTypes[".css"] = "text/css";
+	contentTypes[".jpeg"] = "image/jpeg";
+	contentTypes[".jpg"] = "image/jpeg";
+	contentTypes[".png"] = "image/png";
+	contentTypes[".pdf"] = "application/pdf";
+	contentTypes[".mp3"] = "audio/mpeg";
+	contentTypes[".mp4"] = "video/mp4";
+
+	std::string contentType = contentTypes[extension];
+	if (contentType.empty())
+		logger << WARNING << "Unable to find content type of " << extension << " extension." << ENDL;
+	else
+		_content_type = contentType;
 }
 
 std::string Response::build(void) {
@@ -60,6 +91,7 @@ std::string Response::build(void) {
 	
 	s << "Server: " << "WebServ" << "\r\n";
 	s << "Content-Length: " << _content.length() << "\r\n";
+	s << "Content-Type: " << _content_type << "\r\n";
 	if (!_cookies.empty()) {
 		for (Cookies::iterator cookie = _cookies.begin(); cookie != _cookies.end(); cookie++) {
 			s << "Set-Cookie: " << cookie->first << "=" << cookie->second << "\r\n";

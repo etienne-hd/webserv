@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/07 22:19:14 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/10 13:10:56 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/10 14:53:34 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include "utils.hpp"
 #include "Logger.hpp"
 
+#include <dirent.h>
 #include <netinet/in.h>
 #include <stdexcept>
 #include <sys/socket.h>
@@ -65,16 +66,37 @@ Response Server::getResponse(Request &request) {
 	Response response;
 
 	std::string uri = request.getUri();
+
 	if (this->isRedirection(uri)) {
 		std::map<std::string, std::string> redirections = this->_config.redirections;
 		response.getStatusCode() = 301;
 		response.getHeaders()["Location"] = this->getRedirection(uri);
+		return (response);
+	}
+	
+	if (uri == "/")
+		uri += this->_config.document_index;
+	std::string path = locationResolver(uri);
+	logger << DEBUG << "Location Resolver: " << uri << " > " << path << ENDL;
+	
+	DIR *dir = getDirectory(path);
+	if (dir) {
+		logger << DEBUG << path << " is a directory" << ENDL;
+		// check if directory listing is enabled
+		
+		// send file on directory
+		closedir(dir);
 	} else {
-		std::string path = locationResolver(request.getUri());
-		logger << DEBUG << "Location Resolver: " << request.getUri() << " > " << path << ENDL;
-
-		// Check if its a directory
 		// Check if its a CGI
+		std::fstream file(path.c_str());
+		if (!file.is_open()) {
+			// 404 Error
+		} else {
+			std::string content;
+			std::getline(file, content, '\0');
+			response.getContent() = content;
+			response.setContentTypeByPath(path);
+		}
 	}
 
 	//response.getContent() = "Hello from C++!";

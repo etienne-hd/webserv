@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/04 18:29:17 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/09 19:47:07 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/10 14:44:24 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,21 +14,10 @@
 #include "Config.hpp"
 #include "Server.hpp"
 #include "ServerManager.hpp"
+#include "utils.hpp"
 
 #include <exception>
-#include <fstream>
-#include <stdexcept>
 #include <vector>
-
-const std::string readFile(std::string fileName) {
-	std::fstream file(fileName.c_str());
-	if (!file.is_open())
-		throw std::runtime_error("Unable to open file.");
-
-	std::string content;
-	std::getline(file, content, '\0');
-	return (content);
-}
 
 int	main(int argc, char **argv) {
 	if (argc != 2)

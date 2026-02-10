@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/08 19:58:41 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/10 10:46:31 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/10 14:44:16 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,12 @@
 #include <cctype>
 #include <cstdlib>
 #include <dirent.h>
+#include <fstream>
 #include <netinet/in.h>
 #include <sstream>
 #include <stdexcept>
 #include <string>
+#include <fcntl.h>
 #include <sys/socket.h>
 
 static unsigned short getPort(std::string interface) {
@@ -114,4 +116,14 @@ bool isSamePath(std::string path1, std::string path2) {
 DIR *getDirectory(const std::string &path) {
 	DIR *directory = opendir(path.c_str());
 	return directory;
+}
+
+std::string readFile(std::string fileName) {
+	std::fstream file(fileName.c_str());
+	if (!file.is_open())
+		throw std::runtime_error("Unable to open file.");
+
+	std::string content;
+	std::getline(file, content, '\0');
+	return (content);
 }

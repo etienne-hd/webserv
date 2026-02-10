@@ -1,0 +1,16 @@
+[
+	{
+		"name": "hello world",
+		"keepalive_timeout": 30,
+		"max_body_size": 0,
+		"listen": "0.0.0.0:8080",
+		"locations": [
+			{
+				"uri": "/",
+				"path": "./examples/hello_world/"
+			}
+		],
+		"document_index": "index.html",
+		"allowed_methods": ["GET"]
+	}
+]

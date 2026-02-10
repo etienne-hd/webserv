@@ -6,13 +6,13 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/08 19:56:16 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/10 10:47:05 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/10 14:44:34 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef UTILS_HPP
 # define UTILS_HPP
-#include <dirent.h>
+# include <dirent.h>
 # include <netinet/in.h>
 # include <string>
 
@@ -28,5 +28,6 @@ sockaddr_in getSocketAddress(std::string interface);
 std::string decimalToAddress(unsigned int rawAddress);
 bool isSamePath(std::string path1, std::string path2);
 DIR *getDirectory(const std::string &path);
+std::string readFile(std::string fileName);
 
 #endif
