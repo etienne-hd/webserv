@@ -6,13 +6,16 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/04 18:33:26 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/04 18:47:47 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/10 09:19:36 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef COOKIES_HPP
 # define COOKIES_HPP
 
-class Cookies {};
+# include <map>
+# include <string>
+
+class Cookies: public std::map<std::string, std::string> {};
 
 #endif

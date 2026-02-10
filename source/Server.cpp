@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/07 22:19:14 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/09 20:45:09 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/10 09:25:24 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,7 @@ void Server::onRequest(Client &client) {
 	Response response;
 	response.getContent() = "Hello from C++!";
 	response.getStatusCode() = 200;
+	response.getCookies()["Hello,"] = "World!";
 	sendResponse(client, response);
 }
 
