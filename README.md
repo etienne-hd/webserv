@@ -13,6 +13,9 @@ a static HTTP server
 - [ ] Directory Listing
 - [x] Default error page
 
+## Known issue
+- [ ] Leak when socket initialization fail
+
 ## Configuration
 ```json
 [
