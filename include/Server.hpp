@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/04 18:30:31 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/09 04:48:54 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/09 20:27:27 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,10 @@
 # define SERVER_HPP
 
 # include "Config.hpp"
+# include "Client.hpp"
+# include "Response.hpp"
 
-# include <iostream>
+#include <exception>
 # include <sys/select.h>
 # include <vector>
 
@@ -23,29 +25,37 @@ class Server {
 	private:
 		const Config _config;
 		int	_socket;
-		std::vector<int> _client_sockets;
+		std::vector<Client> _clients;
 
-		std::string getRawRequest(int clientSocket);
+		std::string getRawRequest(int clientSoscket);
+		void sendResponse(Client &client, Response &response);
 	public:
 		Server(const Config config);
 		~Server(void);
 
 		int initSocket(void);
 		int getSocket(void) { return _socket; }
-		std::vector<int> &getClientSockets(void) { return _client_sockets; }
-		void closeClient(int clientSocket);
+		std::vector<Client> &getClientSockets(void) { return _clients; }
+		void closeClient(Client &client);
 
 		const Config getConfig(void) const { return _config; }
 
 		// event
-		int onNewClient(void);
-		void onRequest(int clientSocket);
+		Client onNewClient(void);
+		void onRequest(Client &client);
 
 		class ClientDisconnected: public std::exception {
 			virtual const char *what(void) const throw() { return "Client disconnected."; }
 		};
+		class NotFound: public std::exception {
+			virtual const char *what(void) const throw() { return "404: Not found"; }
+		};
+		class RequestEntityTooLarge: public std::exception {
+			virtual const char *what(void) const throw() { return "413: Request Entity Too Large"; }
+		};
+		//class ClientDisconnected: public std::exception {
+		//	virtual const char *what(void) const throw() { return "Client disconnected."; }
+		//};
 };
-
-std::ostream &operator<<(std::ostream &stream, Server *server);
 
 #endif

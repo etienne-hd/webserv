@@ -6,20 +6,23 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/07 22:51:27 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/09 04:49:02 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/09 19:46:52 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ServerManager.hpp"
 #include "Logger.hpp"
-#include "Request.hpp"
 #include "Server.hpp"
 
 #include <exception>
 #include <sys/select.h>
 #include <vector>
 
-ServerManager::ServerManager(std::vector<Server *> servers): _servers(servers) {}
+ServerManager::ServerManager(void) {}
+
+void ServerManager::addServer(Server server) {
+	_servers.push_back(server);
+}
 
 void ServerManager::run(void) {
 	logger << INFO << "Starting server(s)..." << ENDL;
@@ -28,14 +31,16 @@ void ServerManager::run(void) {
 	FD_ZERO(&_master_socket);
 
 	// Initialize Socket
-	for (std::vector<Server *>::iterator it = _servers.begin(); it != _servers.end(); it++) {
-		Server *server = *it;
-		logger << DEBUG << server << "Initializing server socket..." << ENDL;
+	logger << DEBUG << "Initializing servers socket..." << ENDL;
+	for (std::vector<Server>::iterator server = _servers.begin(); server != _servers.end(); server++) {
 		int serverSocket = server->initSocket();
 		FD_SET(serverSocket, &_master_socket);
-		logger << DEBUG << server << "Successfully initialized socket: " << serverSocket << ENDL;
 	}
-
+	logger << DEBUG << "Server(s) socket initialized!" << ENDL;
+	logger << INFO << "Server(s) successfully started! (Press CTRL+C to quit)" << ENDL;
+	for (std::vector<Server>::iterator server = _servers.begin(); server != _servers.end(); server++) {
+		logger << INFO << "'" << server->getConfig().name << "'" " is running on " << "http://" << server->getConfig().listen << ENDL;
+	}
 	while (1) {
 		read_sockets = _master_socket;
 		write_sockets = _master_socket;
@@ -43,39 +48,38 @@ void ServerManager::run(void) {
 			logger << ERROR << "Select failed" << ENDL;
 			break;
 		}
-		for (std::vector<Server *>::iterator it = _servers.begin(); it != _servers.end(); it++) {
-			Server *server = *it;
+		for (std::vector<Server>::iterator server = _servers.begin(); server != _servers.end(); server++) {
 			int serverSocket = server->getSocket();
 
 			// server socket
 			if (FD_ISSET(serverSocket, &read_sockets)) {
 				// NEW CONNECTION
-				logger << INFO << "New connection!" << ENDL;
-				int clientSocket = server->onNewClient();
-				if (clientSocket != -1) {
-					logger << DEBUG << "New client " << clientSocket << ENDL;
-					FD_SET(clientSocket, &_master_socket);
+				try {
+					logger << INFO << "New connection!" << ENDL;
+					Client client = server->onNewClient();
+					logger << DEBUG << "New client: " << client << ENDL;
+					FD_SET(client.getSocket(), &_master_socket);	
+				} catch (std::exception &e) {
+					logger << ERROR << e.what() << ENDL;
 				}
 			}
 			
-			std::vector<int> clientSockets = server->getClientSockets();
+			std::vector<Client> clientSockets = server->getClientSockets();
 
 			// client sockets
-			for (std::vector<int>::iterator it = clientSockets.begin(); it != clientSockets.end(); it++) {
-				int clientSocket = *it;
-				if (FD_ISSET(clientSocket, &read_sockets) && FD_ISSET(clientSocket, &write_sockets)) {
+			for (std::vector<Client>::iterator client = clientSockets.begin(); client != clientSockets.end(); client++) {
+				if (FD_ISSET(client->getSocket(), &read_sockets) && FD_ISSET(client->getSocket(), &write_sockets)) {
 					// NEW INCOMING DATA
 					logger << DEBUG << "New Data!" << ENDL;
 					try {
-						server->onRequest(clientSocket);
-					} catch (Server::ClientDisconnected &e) {
-						server->closeClient(clientSocket);
-						FD_CLR(clientSocket, &_master_socket);
-						logger << INFO << "Client " << clientSocket << " disconnected" << ENDL;
+						server->onRequest(*client);
 					} catch (std::exception &e) {
-						logger << ERROR << e.what() << ENDL;
+						// If an error occured: close client
+						// closeClient can probably make some error due to delete of a Client
+						server->closeClient(*client);
+						FD_CLR(client->getSocket(), &_master_socket);
+						logger << INFO << e.what() << ENDL;
 					}
-					
 				}
 			}
 		}

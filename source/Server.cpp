@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/07 22:19:14 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/09 04:43:56 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/09 20:45:09 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,18 +23,10 @@
 #include <vector>
 
 Server::Server(const Config config): _config(config) {
-	logger << DEBUG << "Server Constructor called (" << config.name << ")" << ENDL;
 	_socket = -1;
 }
 
-Server::~Server(void) {
-	logger << DEBUG << "Server Destructor called (" << _config.name << ")" << ENDL;
-	if (_socket != -1)
-	{
-		logger << INFO << this << "Closing server socket..." << ENDL;
-		close(_socket);
-	}
-}
+Server::~Server(void) {}
 
 int Server::initSocket(void) {
 	_socket = socket(AF_INET, SOCK_STREAM, 0);
@@ -49,33 +41,51 @@ int Server::initSocket(void) {
 	return (_socket);
 }
 
-int Server::onNewClient(void) {
-	int clientSocket = accept(_socket, __null, __null);
+Client Server::onNewClient(void) {
+	sockaddr_in addr;
+	unsigned int addrSize = sizeof(addr);
+	int clientSocket = accept(_socket, (sockaddr *)&addr, &addrSize);
 	if (clientSocket == -1) {
 		logger << ERROR << "accept failed" << ENDL;
-		return (-1);
+		throw std::runtime_error("accept failed");
 	}
-	_client_sockets.push_back(clientSocket);
-	return (clientSocket);
+	Client client(clientSocket, addr.sin_addr.s_addr, addr.sin_port);
+	_clients.push_back(client);
+	return (client);
 }
 
-void Server::onRequest(int clientSocket) {
-	std::string rawRequest = this->getRawRequest(clientSocket);
+void Server::sendResponse(Client &client, Response &response) {
+	std::string rawResponse = response.build();
+	if (send(client.getSocket(), rawResponse.c_str(), rawResponse.length(), 0) == -1) {
+		throw std::runtime_error("Unable to send response");
+	}
+}
+
+void Server::onRequest(Client &client) {
+	client.getTotalRequest()++;
+	std::string rawRequest = this->getRawRequest(client.getSocket());
 	Request request(rawRequest);
-	logger << INFO << request.getRawMethod() << " " << request.getUri() << ENDL;
+	if (request.getContent().length() > _config.max_body_size)
+		throw Server::RequestEntityTooLarge();
+	
+	logger << INFO << client << " > " << request.getRawMethod() << " " << request.getUri() << ENDL;
+	
+	Response response;
+	response.getContent() = "Hello from C++!";
+	response.getStatusCode() = 200;
+	sendResponse(client, response);
 }
 
-void Server::closeClient(int clientSocket) {
-	close(clientSocket);
-	for (std::vector<int>::iterator it = _client_sockets.begin(); it != _client_sockets.end(); it++) {
-		if (clientSocket == *it) {
-			_client_sockets.erase(it);
+void Server::closeClient(Client &client) {
+	close(client.getSocket());
+	std::vector<Client>::iterator currentClient = _clients.begin();
+	for (; currentClient != _clients.end(); currentClient++) {
+		if (client == *currentClient) {
+			_clients.erase(currentClient);
+			currentClient--;
 			break;
 		}
 	}
-}
-
-std::ostream &operator<<(std::ostream &stream, Server *server) {
-	stream << "[" << server->getConfig().name << "] ";
-	return (stream);
+	if (currentClient == _clients.end())
+		logger << ERROR << "Unable to remove " << client << " from vector." << ENDL;
 }

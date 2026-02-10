@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/07 04:12:16 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/09 02:29:22 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/09 18:13:43 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,15 +20,13 @@
 
 class ServerManager {
 	private:
-		std::vector<Server *> _servers;
+		std::vector<Server> _servers;
 		fd_set _master_socket;
 	
 	public:
-		ServerManager(std::vector<Server *> servers);
+		ServerManager(void);
 
-		// run function
-		// open server socket
-		// use select to manage fd when it come to read / write it
+		void addServer(Server server);
 		void run(void);
 };
 
