@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/08 19:58:41 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/09 01:56:51 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/10 08:50:39 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,4 +81,21 @@ sockaddr_in getSocketAddress(std::string interface) {
 	addr.sin_port = getPort(interface);
 	addr.sin_addr.s_addr = getAddress(interface);
 	return (addr);
+}
+
+// i = 0
+// 1 2 3 4
+// << (3 - i) * 8
+// 4 0 0 0
+// >> 3 * 8
+// 0 0 0 4
+std::string decimalToAddress(unsigned int rawAddress) {
+	std::stringstream address;
+
+	for (unsigned int i = 0; i < 4; i++) {
+		address << ((rawAddress << ((3 - i) * 8)) >> 24);
+		if (i != 3)
+			address << ".";
+	}
+	return (address.str());
 }
