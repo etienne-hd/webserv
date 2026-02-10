@@ -48,7 +48,7 @@ class Config {
 		const unsigned int							keepalive_timeout;
 		const unsigned int							max_body_size;
 		const std::string							listen;
-		const std::map<std::string, std::string>	locations;
+		std::map<std::string, std::string> locations;
 		const std::string							document_index;
 		const std::map<int, std::string>			error_pages;
 		const std::vector<Method>					allowed_methods;
