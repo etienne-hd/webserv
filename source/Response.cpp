@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/09 20:17:45 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/10 17:34:19 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/10 20:01:05 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 
 Response::Response(void) {
 	_status_code = 200;
-	_content_type = "text/html";
+	_content_type = "text/plain";
 }
 
 std::string Response::getStatusCodeText(int status_code) {
