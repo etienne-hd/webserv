@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/09 04:28:41 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/10 10:49:45 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/10 13:30:12 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,6 @@
 
 #include <stdexcept>
 #include <sys/socket.h>
-
-#include "Logger.hpp"
 
 bool Server::isRedirection(std::string uri) const {
 	for (std::map<std::string, std::string>::const_iterator redirection = _config.redirections.begin(); redirection != _config.redirections.end(); ++redirection) {
@@ -75,7 +73,9 @@ std::string Server::locationResolver(const std::string &uri) const {
 	}
 	if (closest.empty())
 		return ("." + uri);
-	const std::string subUri = uri.substr(closest.length(), uri.length());
+	std::string subUri = uri.substr(closest.length(), uri.length());
+	if (*(locationsMap[closest].end() - 1) == '/' && *(closest.begin()) == '/')
+		locationsMap[closest].erase(locationsMap[closest].end() - 1);
 	std::string path = locationsMap[closest] + (subUri[0] != '/' ? "/" : "") + subUri;
 	return path;
 }
