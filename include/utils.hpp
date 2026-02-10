@@ -12,6 +12,7 @@
 
 #ifndef UTILS_HPP
 # define UTILS_HPP
+#include <dirent.h>
 # include <netinet/in.h>
 # include <string>
 
@@ -26,5 +27,6 @@ void delete_vector(T &vector) {
 sockaddr_in getSocketAddress(std::string interface);
 std::string decimalToAddress(unsigned int rawAddress);
 bool isSamePath(std::string path1, std::string path2);
+DIR *getDirectory(const std::string &path);
 
 #endif
