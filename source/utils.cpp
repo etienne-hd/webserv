@@ -15,6 +15,7 @@
 
 #include <cctype>
 #include <cstdlib>
+#include <dirent.h>
 #include <netinet/in.h>
 #include <sstream>
 #include <stdexcept>
@@ -108,4 +109,9 @@ bool isSamePath(std::string path1, std::string path2) {
 	if (*(path2.end() - 1) == '/')
 		path1.erase(path1.end() - 1);
 	return (path1 == path2);
+}
+
+DIR *getDirectory(const std::string &path) {
+	DIR *directory = opendir(path.c_str());
+	return directory;
 }
