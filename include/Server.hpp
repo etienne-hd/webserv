@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/04 18:30:31 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/10 10:26:11 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/09 20:27:27 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,12 +15,13 @@
 
 # include "Config.hpp"
 # include "Client.hpp"
-#include "Request.hpp"
 # include "Response.hpp"
 
 #include <exception>
 # include <sys/select.h>
 # include <vector>
+
+#include "Request.hpp"
 
 class Server {
 	private:
@@ -28,11 +29,13 @@ class Server {
 		int	_socket;
 		std::vector<Client> _clients;
 
-		std::string getRawRequest(int clientSoscket);
+		std::string getRawRequest(int clientSoscket) const;
 		void sendResponse(Client &client, Response &response);
 		Response getResponse(Request &request);
-		bool isRedirection(std::string uri);
-		std::string getRedirection(std::string uri);
+		bool isRedirection(std::string uri) const;
+		std::string getRedirection(std::string uri) const;
+		std::string locationResolver(const std::string &uri) const;
+
 	public:
 		Server(const Config config);
 		~Server(void);

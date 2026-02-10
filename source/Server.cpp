@@ -72,6 +72,7 @@ Response Server::getResponse(Request &request) {
 	}
 
 	// Resolve path
+	logger << DEBUG << locationResolver(request.getUri()) << ENDL;
 	// Check if its a directory
 	// Check if its a CGI
 

@@ -18,7 +18,9 @@
 #include <stdexcept>
 #include <sys/socket.h>
 
-bool Server::isRedirection(std::string uri) {
+#include "Logger.hpp"
+
+bool Server::isRedirection(std::string uri) const {
 	for (std::map<std::string, std::string>::const_iterator redirection = _config.redirections.begin(); redirection != _config.redirections.end(); ++redirection) {
 		if (isSamePath(uri, redirection->first))
 			return (1);
@@ -26,7 +28,7 @@ bool Server::isRedirection(std::string uri) {
 	return (0);
 }
 
-std::string Server::getRedirection(std::string uri) {
+std::string Server::getRedirection(std::string uri) const {
 	for (std::map<std::string, std::string>::const_iterator redirection = _config.redirections.begin(); redirection != _config.redirections.end(); ++redirection) {
 		if (isSamePath(uri, redirection->first))
 			return (redirection->second);
@@ -34,7 +36,7 @@ std::string Server::getRedirection(std::string uri) {
 	throw std::runtime_error("Unable to find redirection.");
 }
 
-std::string Server::getRawRequest(int clientSocket) {
+std::string Server::getRawRequest(int clientSocket) const {
 	// 8192 -> Method + Uri + HTTP Version + Headers
 	char *buffer = new char[_config.max_body_size + 8192 + 2];
 	
@@ -63,14 +65,17 @@ std::string Server::locationResolver(const std::string &uri) const {
 	std::map<std::string, std::string>::const_iterator locations = locationsMap.begin();
 	std::string closest;
 
-	while (locations != getConfig().locations.end()) {
-		if (strncmp(uri.c_str(), locations->first.c_str(), locations->first.length()) == 0) {
+	while (locations != locationsMap.end()) {
+		if (std::strncmp(uri.c_str(), locations->first.c_str(), locations->first.length()) == 0) {
 			if (closest.length() < locations->first.length()) {
 				closest = locations->first;
 			}
 		}
 		++locations;
 	}
-	std::string path = locationsMap[closest] + uri.substr(closest.length(), uri.length());
+	if (closest.empty())
+		return ("." + uri);
+	const std::string subUri = uri.substr(closest.length(), uri.length());
+	std::string path = locationsMap[closest] + (subUri[0] != '/' ? "/" : "") + subUri;
 	return path;
 }

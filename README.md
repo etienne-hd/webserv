@@ -2,13 +2,13 @@
 a static HTTP server
 
 ## Todo
-- [ ] Path resolver
+- [x] Path resolver
 - [ ] CGI
 - [ ] Content-Type in headers
 - [ ] Working HTTP Error (404, 413, 429)
 - [ ] Keep Alive Handler
 - [ ] Check Allowed Method
-- [ ] Redirection
+- [x] Redirection
 - [ ] File upload
 - [ ] Directory Listing
 - [ ] Default error page
