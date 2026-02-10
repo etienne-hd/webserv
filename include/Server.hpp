@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/04 18:30:31 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/10 10:19:52 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/10 10:26:11 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ class Server {
 		int	_socket;
 		std::vector<Client> _clients;
 
-		std::string getRawRequest(int clientSoscket);
+		std::string getRawRequest(int clientSocket);
 		void sendResponse(Client &client, Response &response);
 		Response getResponse(Request &request);
 	public:
