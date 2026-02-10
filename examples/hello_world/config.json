@@ -1,8 +1,6 @@
 [
 	{
 		"name": "hello world",
-		"keepalive_timeout": 30,
-		"max_body_size": 0,
 		"listen": "0.0.0.0:8080",
 		"locations": [
 			{

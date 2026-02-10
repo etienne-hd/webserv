@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/09 20:17:45 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/10 15:27:27 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/10 17:34:19 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,10 +88,11 @@ std::string Response::build(void) {
 	s << "HTTP/1.1" << " ";
 	s << _status_code << " ";
 	s << getStatusCodeText(_status_code) << "\r\n";
-	
-	s << "Server: " << "WebServ" << "\r\n";
+
+	s << "Server: " << "webserv" << "\r\n";
 	s << "Content-Length: " << _content.length() << "\r\n";
 	s << "Content-Type: " << _content_type << "\r\n";
+
 	if (!_cookies.empty()) {
 		for (Cookies::iterator cookie = _cookies.begin(); cookie != _cookies.end(); cookie++) {
 			s << "Set-Cookie: " << cookie->first << "=" << cookie->second << "\r\n";
