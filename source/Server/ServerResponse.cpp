@@ -87,16 +87,17 @@ Response Server::getErrorResponse(int status_code) {
 
 	response.getStatusCode() = status_code;
 	std::map<int, std::string> error_pages = _config.error_pages;
-	if (error_pages.find(status_code) == error_pages.end()) {
+	response.getContentType() = "text/html";
+	if (error_pages.find(status_code) == error_pages.end())
 		response.getContent() = getDefaultErrorContent(status_code);
-	} else {
+	else {
 		std::string path = this->locationResolver(error_pages[status_code]);
 		std::ifstream file(path.c_str());
 		if (file.is_open()) {
 			std::getline(file, response.getContent(), '\0');
-		} else {
+			response.setContentTypeByPath(path);
+		} else
 			response.getContent() = getDefaultErrorContent(status_code);
-		}
 	}
 	return (response);
 }
