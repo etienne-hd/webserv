@@ -7,7 +7,7 @@ a static HTTP server
 - [x] Content-Type in headers
 - [x] Working HTTP Error (400, 404, 413, 429)
 - [ ] Keep Alive Handler
-- [ ] Check Allowed Method
+- [x] Check Allowed Method
 - [x] Redirection
 - [ ] File upload
 - [ ] Directory Listing
