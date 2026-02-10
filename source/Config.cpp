@@ -6,14 +6,13 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/07 20:49:43 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/09 00:41:18 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/09 19:47:03 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Config.hpp"
 #include "JSONReader.hpp"
 #include "Method.hpp"
-#include "utils.hpp"
 
 #include <exception>
 #include <stdexcept>
@@ -22,7 +21,7 @@
 Config::Config(
 	std::string name,
 	unsigned int keepalive_timeout,
-	unsigned int max_request_size,
+	unsigned int max_body_size,
 	std::string listen,
 	std::map<std::string, std::string> locations,
 	std::string document_index,
@@ -38,7 +37,7 @@ Config::Config(
 ):
 name(name),
 keepalive_timeout(keepalive_timeout), 
-max_request_size(max_request_size),
+max_body_size(max_body_size),
 listen(listen), locations(locations),
 document_index(document_index),
 error_pages(error_pages),
@@ -78,7 +77,7 @@ Config Config::getConfig(JSONReader reader) {
 	std::map<std::string, std::string>	locations;
 	
 	unsigned int						keepalive_timeout = 30;
-	unsigned int						max_request_size = 32768;
+	unsigned int						max_body_size = 32768;
 	std::string							document_index = "index.html";
 	std::map<int, std::string>			error_pages;
 	std::vector<Method>					allowed_methods;
@@ -105,8 +104,8 @@ Config Config::getConfig(JSONReader reader) {
 			}
 		} else if (*key == "keepalive_timeout")
 			keepalive_timeout = reader["keepalive_timeout"].toInt();
-		else if (*key == "max_request_size")
-			max_request_size = reader["max_request_size"].toInt();
+		else if (*key == "max_body_size")
+			max_body_size = reader["max_body_size"].toInt();
 		else if (*key == "document_index")
 			document_index = reader["document_index"].toString();
 		else if (*key == "error_pages") {
@@ -148,7 +147,7 @@ Config Config::getConfig(JSONReader reader) {
 	return (Config(
 		name,
 		keepalive_timeout,
-		max_request_size,
+		max_body_size,
 		listen,
 		locations,
 		document_index,
