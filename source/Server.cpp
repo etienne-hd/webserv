@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/07 22:19:14 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/10 10:50:06 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/10 13:10:56 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,14 +69,14 @@ Response Server::getResponse(Request &request) {
 		std::map<std::string, std::string> redirections = this->_config.redirections;
 		response.getStatusCode() = 301;
 		response.getHeaders()["Location"] = this->getRedirection(uri);
+	} else {
+		std::string path = locationResolver(request.getUri());
+		logger << DEBUG << "Location Resolver: " << request.getUri() << " > " << path << ENDL;
+
+		// Check if its a directory
+		// Check if its a CGI
 	}
 
-	// Resolve path
-	logger << DEBUG << locationResolver(request.getUri()) << ENDL;
-	// Check if its a directory
-	// Check if its a CGI
-
-	
 	//response.getContent() = "Hello from C++!";
 	//response.getStatusCode() = 200;
 	//response.getCookies()["Hello,"] = "World!";
