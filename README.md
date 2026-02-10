@@ -1,6 +1,17 @@
 # webserv
 a static HTTP server
 
+## Todo
+- [ ] Path resolver
+- [ ] CGI
+- [ ] Content-Type in headers
+- [ ] Working HTTP Error (404, 413, 429)
+- [ ] Keep Alive Handler
+- [ ] Check Allowed Method
+- [ ] Redirection
+- [ ] File upload
+- [ ] Directory Listing
+
 ## Configuration
 ```json
 [

@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/07 22:51:27 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/09 19:46:52 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/10 09:15:54 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,9 +55,8 @@ void ServerManager::run(void) {
 			if (FD_ISSET(serverSocket, &read_sockets)) {
 				// NEW CONNECTION
 				try {
-					logger << INFO << "New connection!" << ENDL;
 					Client client = server->onNewClient();
-					logger << DEBUG << "New client: " << client << ENDL;
+					logger << DEBUG << client << " > New client" << ENDL;
 					FD_SET(client.getSocket(), &_master_socket);	
 				} catch (std::exception &e) {
 					logger << ERROR << e.what() << ENDL;
@@ -70,15 +69,18 @@ void ServerManager::run(void) {
 			for (std::vector<Client>::iterator client = clientSockets.begin(); client != clientSockets.end(); client++) {
 				if (FD_ISSET(client->getSocket(), &read_sockets) && FD_ISSET(client->getSocket(), &write_sockets)) {
 					// NEW INCOMING DATA
-					logger << DEBUG << "New Data!" << ENDL;
 					try {
 						server->onRequest(*client);
+					} catch (Server::ClientDisconnected &e) {
+						server->closeClient(*client);
+						FD_CLR(client->getSocket(), &_master_socket);
+						logger << INFO << *client << " > Client disconnected" << ENDL;
 					} catch (std::exception &e) {
 						// If an error occured: close client
 						// closeClient can probably make some error due to delete of a Client
 						server->closeClient(*client);
 						FD_CLR(client->getSocket(), &_master_socket);
-						logger << INFO << e.what() << ENDL;
+						logger << WARNING << e.what() << ENDL;
 					}
 				}
 			}
