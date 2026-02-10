@@ -6,15 +6,15 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/04 18:32:18 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/07 22:43:15 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/09 20:29:23 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef RESPONSE_HPP
 # define RESPONSE_HPP
 
-# include "Headers.hpp"
 # include "Cookies.hpp"
+# include "Headers.hpp"
 
 # include <string>
 
@@ -23,16 +23,16 @@ class Response {
 		int			_status_code;
 		Headers		_headers;
 		Cookies		_cookies;
-		std::string _content;
+		std::string	_content;
 
 	public:
-		Response(int status_code, Headers headers, Cookies cookies, std::string content);
+		Response(void);
 		std::string build(void);
 
-		int getStatusCode(void) const { return _status_code; }
-		Headers getHeaders(void) const { return _headers; }
-		Cookies getCookies(void) const { return _cookies; }
-		std::string getContent(void) const { return _content; }
+		int &getStatusCode(void) { return _status_code; }
+		Headers &getHeaders(void) { return _headers; }
+		Cookies &getCookies(void) { return _cookies; }
+		std::string &getContent(void) { return _content; }
 };
 
 #endif

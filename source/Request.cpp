@@ -6,13 +6,12 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/09 02:45:56 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/09 04:43:38 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/09 20:37:50 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Request.hpp"
 #include "Method.hpp"
-#include "Logger.hpp"
 
 #include <cstring>
 #include <iostream>
@@ -38,17 +37,14 @@ Request::Request(std::string rawRequest) {
 			_raw_method = currentToken;
 			_method = getMethodFromString(currentToken);
 			currentTokenType = URI;
-			std::cout << currentToken << std::endl;
 			currentToken.clear();
 		} else if (currentTokenType == URI && expectedToken(rawRequest, it, " ")) {
 			_uri = currentToken;
 			currentTokenType = HTTP_VERSION;
-			std::cout << currentToken << std::endl;
 			currentToken.clear();
 		} else if (currentTokenType == HTTP_VERSION && expectedToken(rawRequest, it, "\r\n")) {
 			_http_version = currentToken;
 			currentTokenType = HEADERS;
-			std::cout << currentToken << std::endl;
 			currentToken.clear();
 		} else if (currentTokenType == HEADERS) {
 			while (it != rawRequest.end() && !expectedToken(rawRequest, it, "\r\n")) {
