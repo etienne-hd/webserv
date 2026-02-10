@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/08 19:58:41 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/10 08:50:39 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/10 10:46:31 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,4 +98,14 @@ std::string decimalToAddress(unsigned int rawAddress) {
 			address << ".";
 	}
 	return (address.str());
+}
+
+bool isSamePath(std::string path1, std::string path2) {
+	if (path1 == path2)
+		return (1);
+	if (*(path1.end() - 1) == '/')
+		path1.erase(path1.end() - 1);
+	if (*(path2.end() - 1) == '/')
+		path1.erase(path1.end() - 1);
+	return (path1 == path2);
 }

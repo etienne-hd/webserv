@@ -6,13 +6,31 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/09 04:28:41 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/09 20:35:27 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/10 10:49:45 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
+#include "utils.hpp"
 
+#include <stdexcept>
 #include <sys/socket.h>
+
+bool Server::isRedirection(std::string uri) {
+	for (std::map<std::string, std::string>::const_iterator redirection = _config.redirections.begin(); redirection != _config.redirections.end(); ++redirection) {
+		if (isSamePath(uri, redirection->first))
+			return (1);
+	}
+	return (0);
+}
+
+std::string Server::getRedirection(std::string uri) {
+	for (std::map<std::string, std::string>::const_iterator redirection = _config.redirections.begin(); redirection != _config.redirections.end(); ++redirection) {
+		if (isSamePath(uri, redirection->first))
+			return (redirection->second);
+	}
+	throw std::runtime_error("Unable to find redirection.");
+}
 
 std::string Server::getRawRequest(int clientSocket) {
 	// 8192 -> Method + Uri + HTTP Version + Headers

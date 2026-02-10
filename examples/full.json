@@ -12,6 +12,10 @@
 			{
 				"uri": "/error",
 				"path": "./examples/error"
+			},
+			{
+				"uri": "/error/prout",
+				"path": "./examples/error"
 			}
 		],
 		"document_index": "index.html",
