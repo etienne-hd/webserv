@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/09 20:17:45 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/10 15:07:39 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/10 15:27:27 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,12 @@
 #include <sstream>
 #include <string>
 
-static std::string getStatusCodeText(int status_code) {
+Response::Response(void) {
+	_status_code = 200;
+	_content_type = "text/html";
+}
+
+std::string Response::getStatusCodeText(int status_code) {
 	std::map<int, std::string> statusCodeTexts;
 	
 	statusCodeTexts[200] = "OK";
@@ -45,11 +50,6 @@ static std::string getStatusCodeText(int status_code) {
 		return ("Unknown");
 	}
 	return (statusCodeText);
-}
-
-Response::Response(void) {
-	_status_code = 200;
-	_content_type = "text/html";
 }
 
 void Response::setContentTypeByPath(std::string path) {

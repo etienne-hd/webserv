@@ -8,8 +8,9 @@ SRCS = $(SRC_DIR)main.cpp \
 	$(SRC_DIR)JSON/JSONReader.cpp \
 	$(SRC_DIR)JSON/JSONUtils.cpp \
 	$(SRC_DIR)Config.cpp \
-	$(SRC_DIR)Server.cpp \
-	$(SRC_DIR)ServerUtils.cpp \
+	$(SRC_DIR)Server/Server.cpp \
+	$(SRC_DIR)Server/ServerUtils.cpp \
+	$(SRC_DIR)Server/ServerResponse.cpp \
 	$(SRC_DIR)ServerManager.cpp \
 	$(SRC_DIR)Method.cpp \
 	$(SRC_DIR)utils.cpp \
@@ -29,6 +30,7 @@ $(NAME): $(OBJS)
 $(OBJ_DIR)%.o: $(SRC_DIR)%.cpp
 	@mkdir -p $(OBJ_DIR)
 	@mkdir -p $(OBJ_DIR)/JSON
+	@mkdir -p $(OBJ_DIR)/Server
 	$(CXX) $(CXXFLAGS) $< -c -o $@
 
 fclean: clean

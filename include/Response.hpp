@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/04 18:32:18 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/10 14:51:17 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/10 15:28:29 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,8 @@ class Response {
 		std::string &getContent(void) { return _content; }
 		std::string &getContentType(void) { return _content_type; }
 		void setContentTypeByPath(std::string path);
+		
+		static std::string getStatusCodeText(int status_code);
 };
 
 #endif

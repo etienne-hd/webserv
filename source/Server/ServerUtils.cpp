@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/09 04:28:41 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/10 13:30:12 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/10 16:47:28 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 #include "Server.hpp"
 #include "utils.hpp"
+#include "Logger.hpp"
 
 #include <stdexcept>
 #include <sys/socket.h>
@@ -36,9 +37,9 @@ std::string Server::getRedirection(std::string uri) const {
 
 std::string Server::getRawRequest(int clientSocket) const {
 	// 8192 -> Method + Uri + HTTP Version + Headers
-	char *buffer = new char[_config.max_body_size + 8192 + 2];
+	char *buffer = new char[_config.max_body_size + 65536 + 1];
 	
-	int code = recv(clientSocket, buffer, _config.max_body_size + 8192 + 1, 0);
+	int code = recv(clientSocket, buffer, _config.max_body_size + 65536, 0);
 	if (code == 0) {
 		delete[] buffer;
 		throw Server::ClientDisconnected();
@@ -51,17 +52,29 @@ std::string Server::getRawRequest(int clientSocket) const {
 	
 	std::string rawRequest = buffer;
 	delete[] buffer;
-	
-	if (rawRequest.length() > _config.max_body_size + 8192 + 1)
-		throw Server::RequestEntityTooLarge();
 
 	return (rawRequest);
 }
 
-std::string Server::locationResolver(const std::string &uri) const {
+static void removeDuplicateSlash(std::string &s) {
+	for (std::string::iterator it = s.begin(); it != s.end(); it++) {
+		if (*it == '/' && *(it + 1) == '/')
+		{
+			s.erase(it);
+			it--;
+		}
+	}
+}
+
+std::string Server::locationResolver(std::string &uri) const {
 	std::map<std::string, std::string> locationsMap = _config.locations;
 	std::map<std::string, std::string>::const_iterator locations = locationsMap.begin();
 	std::string closest;
+
+	logger << DEBUG << "Location Resolver: " << uri << " -> ";
+	removeDuplicateSlash(uri);
+	if (uri == "/")
+		uri = _config.document_index;
 
 	while (locations != locationsMap.end()) {
 		if (std::strncmp(uri.c_str(), locations->first.c_str(), locations->first.length()) == 0) {
@@ -74,8 +87,8 @@ std::string Server::locationResolver(const std::string &uri) const {
 	if (closest.empty())
 		return ("." + uri);
 	std::string subUri = uri.substr(closest.length(), uri.length());
-	if (*(locationsMap[closest].end() - 1) == '/' && *(closest.begin()) == '/')
-		locationsMap[closest].erase(locationsMap[closest].end() - 1);
 	std::string path = locationsMap[closest] + (subUri[0] != '/' ? "/" : "") + subUri;
+	removeDuplicateSlash(path);
+	logger << path << ENDL;
 	return path;
 }

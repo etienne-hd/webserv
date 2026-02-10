@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/07 22:19:14 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/10 14:53:34 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/10 16:38:52 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,67 +55,23 @@ Client Server::onNewClient(void) {
 	return (client);
 }
 
-void Server::sendResponse(Client &client, Response &response) {
-	std::string rawResponse = response.build();
-	if (send(client.getSocket(), rawResponse.c_str(), rawResponse.length(), 0) == -1) {
-		throw std::runtime_error("Unable to send response");
-	}
-}
-
-Response Server::getResponse(Request &request) {
-	Response response;
-
-	std::string uri = request.getUri();
-
-	if (this->isRedirection(uri)) {
-		std::map<std::string, std::string> redirections = this->_config.redirections;
-		response.getStatusCode() = 301;
-		response.getHeaders()["Location"] = this->getRedirection(uri);
-		return (response);
-	}
-	
-	if (uri == "/")
-		uri += this->_config.document_index;
-	std::string path = locationResolver(uri);
-	logger << DEBUG << "Location Resolver: " << uri << " > " << path << ENDL;
-	
-	DIR *dir = getDirectory(path);
-	if (dir) {
-		logger << DEBUG << path << " is a directory" << ENDL;
-		// check if directory listing is enabled
-		
-		// send file on directory
-		closedir(dir);
-	} else {
-		// Check if its a CGI
-		std::fstream file(path.c_str());
-		if (!file.is_open()) {
-			// 404 Error
-		} else {
-			std::string content;
-			std::getline(file, content, '\0');
-			response.getContent() = content;
-			response.setContentTypeByPath(path);
-		}
-	}
-
-	//response.getContent() = "Hello from C++!";
-	//response.getStatusCode() = 200;
-	//response.getCookies()["Hello,"] = "World!";
-
-	return (response);
-}
-
 void Server::onRequest(Client &client) {
 	client.getTotalRequest()++;
 	std::string rawRequest = this->getRawRequest(client.getSocket());
 	Request request(rawRequest);
+	
+	Response response;
+	// check allowed method
+	//if (this->_config.allowed_methods.(request.getMethod()) == this->_config.allowed_methods.end()) {
+	//	
+	//}
+	logger << DEBUG << request.getContent() << request.getContent().length() << ENDL;
 	if (request.getContent().length() > _config.max_body_size)
-		throw Server::RequestEntityTooLarge();
+		response = getErrorResponse(413);
+	else
+		response = this->getResponse(request);
 	
-	logger << INFO << client << " > " << request.getRawMethod() << " " << request.getUri() << ENDL;
-	
-	Response response = this->getResponse(request);
+	logger << INFO << client << " -> " << response.getStatusCode() << " " << request.getRawMethod() << " " << request.getUri() << ENDL;
 	sendResponse(client, response);
 }
 

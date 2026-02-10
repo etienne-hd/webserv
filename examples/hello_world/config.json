@@ -10,7 +10,7 @@
 				"path": "./examples/hello_world/"
 			}
 		],
-		"document_index": "index.html",
+		"document_index": "/index.html",
 		"allowed_methods": ["GET"]
 	}
 ]
