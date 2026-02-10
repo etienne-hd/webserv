@@ -11,6 +11,7 @@ a static HTTP server
 - [ ] Redirection
 - [ ] File upload
 - [ ] Directory Listing
+- [ ] Default error page
 
 ## Configuration
 ```json
