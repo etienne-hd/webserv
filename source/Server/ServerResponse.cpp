@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/10 15:23:44 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/10 15:50:07 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/10 19:12:14 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,10 +44,20 @@ Response Server::getResponse(Request &request) {
 	DIR *dir = getDirectory(path);
 	if (dir) {
 		logger << DEBUG << path << " is a directory" << ENDL;
-		if (_config.directory_listing_enabled) {}
+		if (_config.directory_listing_enabled) {
 			// Directory Listing
-		
-		// send file on directory
+		} else { 
+			std::string file_on_directory = _config.file_on_directory;
+			path = this->locationResolver(file_on_directory);
+			std::fstream file(path.c_str());
+			if (!file.is_open()) {
+				response = getErrorResponse(404);
+			} else {
+				std::getline(file, response.getContent(), '\0');
+				response.setContentTypeByPath(path);
+			}
+		}
+			// send file on directory
 		closedir(dir);
 	} else {
 		// Check if its a CGI
@@ -59,10 +69,6 @@ Response Server::getResponse(Request &request) {
 			response.setContentTypeByPath(path);
 		}
 	}
-
-	//response.getContent() = "Hello from C++!";
-	//response.getStatusCode() = 200;
-	//response.getCookies()["Hello,"] = "World!";
 
 	return (response);
 }

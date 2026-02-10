@@ -1,0 +1,16 @@
+[
+	{
+		"name": "hello world",
+		"listen": "0.0.0.0:8080",
+		"locations": [
+			{
+				"uri": "/",
+				"path": "./examples/file_on_directory/"
+			}
+		],
+		"directory_listing_enabled": false,
+		"file_on_directory": "/folder.html",
+		"document_index": "/index.html",
+		"allowed_methods": ["GET"]
+	}
+]
