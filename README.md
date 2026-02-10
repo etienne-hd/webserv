@@ -4,14 +4,14 @@ a static HTTP server
 ## Todo
 - [x] Path resolver
 - [ ] CGI
-- [ ] Content-Type in headers
-- [ ] Working HTTP Error (404, 413, 429)
+- [x] Content-Type in headers
+- [x] Working HTTP Error (400, 404, 413, 429)
 - [ ] Keep Alive Handler
 - [ ] Check Allowed Method
 - [x] Redirection
 - [ ] File upload
 - [ ] Directory Listing
-- [ ] Default error page
+- [x] Default error page
 
 ## Configuration
 ```json
