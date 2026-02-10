@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/09 02:45:56 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/09 20:37:50 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/10 10:16:33 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 #include "Method.hpp"
 
 #include <cstring>
-#include <iostream>
 #include <string>
 #include <sys/socket.h>
 

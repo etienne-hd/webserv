@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/07 22:19:14 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/10 09:25:24 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/10 10:20:36 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,24 @@ void Server::sendResponse(Client &client, Response &response) {
 	}
 }
 
+Response Server::getResponse(Request &request) {
+	(void)request;
+
+	// Check if its a redirection
+
+	// Resolve path
+	// Check if its a directory
+	// Check if its a CGI
+
+	Response response;
+
+	response.getContent() = "Hello from C++!";
+	response.getStatusCode() = 200;
+	response.getCookies()["Hello,"] = "World!";
+
+	return (response);
+}
+
 void Server::onRequest(Client &client) {
 	client.getTotalRequest()++;
 	std::string rawRequest = this->getRawRequest(client.getSocket());
@@ -70,10 +88,7 @@ void Server::onRequest(Client &client) {
 	
 	logger << INFO << client << " > " << request.getRawMethod() << " " << request.getUri() << ENDL;
 	
-	Response response;
-	response.getContent() = "Hello from C++!";
-	response.getStatusCode() = 200;
-	response.getCookies()["Hello,"] = "World!";
+	Response response = this->getResponse(request);
 	sendResponse(client, response);
 }
 

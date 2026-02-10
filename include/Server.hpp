@@ -29,7 +29,6 @@ class Server {
 
 		std::string getRawRequest(int clientSoscket);
 		void sendResponse(Client &client, Response &response);
-		std::string locationResolver(const std::string &uri) const;
 	public:
 		Server(const Config config);
 		~Server(void);
@@ -40,7 +39,6 @@ class Server {
 		void closeClient(Client &client);
 
 		const Config getConfig(void) const { return _config; }
-
 
 		// event
 		Client onNewClient(void);
