@@ -16,6 +16,8 @@
 # include <netinet/in.h>
 # include <string>
 
+#include "Request.hpp"
+
 template <typename T>
 void delete_vector(T &vector) {
 	for (typename T::iterator it = vector.begin(); it != vector.end(); it++) {
@@ -29,5 +31,6 @@ std::string decimalToAddress(unsigned int rawAddress);
 bool isSamePath(std::string path1, std::string path2);
 DIR *getDirectory(const std::string &path);
 std::string readFile(std::string fileName);
+std::string getFileListing(DIR *dir, const std::string &currentUri);
 
 #endif

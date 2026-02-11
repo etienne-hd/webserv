@@ -24,6 +24,8 @@
 #include <fcntl.h>
 #include <sys/socket.h>
 
+#include "Request.hpp"
+
 static unsigned short getPort(std::string interface) {
 	unsigned long portPos = interface.find(":");
 	if (portPos == std::string::npos) {
@@ -126,4 +128,21 @@ std::string readFile(std::string fileName) {
 	std::string content;
 	std::getline(file, content, '\0');
 	return (content);
+}
+
+std::string getFileListing(DIR *dir, const std::string &currentUri) {
+	struct dirent *entry = readdir(dir);
+	std::stringstream ss;
+
+	ss << "<h1>Index of " << currentUri << "</h1>";
+	ss << "<hr style='width: 100%;'/>";
+	ss << "<ul>";
+	while (entry != NULL) {
+		ss << "<li>"
+		<< "<a href='" << currentUri + (currentUri[currentUri.length() - 1] != '/' ? "/" : "") + entry->d_name << "'>" << entry->d_name << "</a>"
+		<< "</li>";
+		entry = readdir(dir);
+	}
+	ss << "<ul/>";
+	return ss.str();
 }

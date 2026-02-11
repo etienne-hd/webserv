@@ -16,6 +16,7 @@ a static HTTP server
 ## Known issue
 - [ ] Leak when socket initialization fail
 
+- [x] Default error pa
 ## Configuration
 ```json
 [

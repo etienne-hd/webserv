@@ -45,8 +45,10 @@ Response Server::getResponse(Request &request) {
 	if (dir) {
 		logger << DEBUG << path << " is a directory" << ENDL;
 		if (_config.directory_listing_enabled) {
-			// Directory Listing
-		} else { 
+			std::string content = getFileListing(dir, request.getUri());
+			response.getContentType() = "text/html";
+			response.getContent() = content;
+		} else {
 			std::string file_on_directory = _config.file_on_directory;
 			path = this->locationResolver(file_on_directory);
 			std::fstream file(path.c_str());
@@ -76,8 +78,10 @@ Response Server::getResponse(Request &request) {
 static std::string getDefaultErrorContent(int status_code) {
 	std::stringstream ss;
 
-	ss << "<html><body>";
+	ss << "<html><body style='width:100%; height:  100%; display:flex; flex-direction:column; justify-items:start; align-items:center;'>";
 	ss << "<h1>" << status_code << " " << Response::getStatusCodeText(status_code) << "</h1>";
+	ss << "<hr style='width: 100%'/>";
+	ss << "<p>wishinx</p>";
 	ss << "</body></html>";
 	return (ss.str());
 }
