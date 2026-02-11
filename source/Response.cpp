@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/09 20:17:45 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/10 20:01:05 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/11 10:04:35 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,7 @@ void Response::setContentTypeByPath(std::string path) {
 	contentTypes[".pdf"] = "application/pdf";
 	contentTypes[".mp3"] = "audio/mpeg";
 	contentTypes[".mp4"] = "video/mp4";
+	contentTypes[".txt"] = "text/plain";
 
 	std::string contentType = contentTypes[extension];
 	if (contentType.empty())
