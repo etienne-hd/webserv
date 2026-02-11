@@ -80,7 +80,7 @@ static std::string getDefaultErrorContent(int status_code) {
 	ss << "<html><body style='width:100%; height:  100%; display:flex; flex-direction:column; justify-items:start; align-items:center;'>";
 	ss << "<h1>" << status_code << " " << Response::getStatusCodeText(status_code) << "</h1>";
 	ss << "<hr style='width: 100%'/>";
-	ss << "<p>wishinx</p>";
+	ss << "<p>webserv</p>";
 	ss << "</body></html>";
 	return (ss.str());
 }
