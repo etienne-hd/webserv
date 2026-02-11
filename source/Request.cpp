@@ -6,12 +6,13 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/09 02:45:56 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/11 10:47:34 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/11 19:46:18 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Request.hpp"
 #include "Method.hpp"
+#include "utils.hpp"
 
 #include <cstring>
 #include <exception>
@@ -59,6 +60,7 @@ Request::Request(std::string rawRequest) {
 					key += *it;
 					it++;
 				}
+				strToLower(key);
 				std::string value;
 				while (it != rawRequest.end() && !expectedToken(rawRequest, it, "\r\n")) {
 					value += *it;

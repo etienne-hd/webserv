@@ -6,12 +6,13 @@ a static HTTP server
 - [ ] CGI
 - [x] Content-Type in headers
 - [x] Working HTTP Error (400, 404, 413, 429)
-- [ ] Keep Alive Handler
+- [x] Keep Alive Handler
 - [x] Check Allowed Method
 - [x] Redirection
 - [ ] File upload
 - [x] Directory Listing
 - [x] Default error page
+- [ ] Better Read
 
 ## Known issue
 - [ ] Leak when socket initialization fail

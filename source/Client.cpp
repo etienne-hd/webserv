@@ -6,21 +6,28 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/09 19:14:35 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/10 09:02:30 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/11 19:37:37 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Client.hpp"
 #include "utils.hpp"
 
-
 Client::Client(int socket, unsigned int rawAddress, unsigned short rawPort) {
 	_socket = socket;
 	_raw_address = rawAddress;
 	_address = decimalToAddress(rawAddress);
 	_raw_port = rawPort;
-	_last_receive_request = 0;
+	_client_timeout = time(__null);
 	_total_request = 0;
+	_total_segment = 0;
+	_segment_timeout = -1;
+}
+
+void Client::resetSegment(void) {
+	_current_segment.clear();
+	_total_segment = 0;
+	_segment_timeout = -1;
 }
 
 bool Client::operator==(const Client &client) {

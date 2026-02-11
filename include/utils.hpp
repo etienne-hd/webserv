@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/08 19:56:16 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/11 10:47:38 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/11 15:14:34 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,6 @@ std::string decimalToAddress(unsigned int rawAddress);
 bool isSamePath(std::string path1, std::string path2);
 DIR *getDirectory(const std::string &path);
 std::string readFile(std::string fileName);
-std::string getFileListing(DIR *dir, const std::string &currentUri);
+void strToLower(std::string &s);
 
 #endif

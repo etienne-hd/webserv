@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/08 19:58:41 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/11 10:47:32 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/11 16:32:55 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,4 +126,11 @@ std::string readFile(std::string fileName) {
 	std::string content;
 	std::getline(file, content, '\0');
 	return (content);
+}
+
+void strToLower(std::string &s) {
+	for (std::string::iterator it = s.begin(); it != s.end(); it++) {
+		if (*it >= 'A' && *it <= 'Z')
+			*it += 32;
+	}
 }

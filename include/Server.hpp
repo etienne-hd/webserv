@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/04 18:30:31 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/11 10:07:48 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/11 19:30:13 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,8 +60,12 @@ class Server {
 		const Config getConfig(void) const { return _config; }
 
 		// event
-		Client onNewClient(void);
-		void onRequest(Client &client);
+		Client acceptClient(void);
+		void receiveSegment(Client &client);
+		bool isEndOfSegment(Client &client);
+		bool onRequest(Client &client);
+		void onSegmentTimeout(Client &client);
+		void onKeepAliveTimeout(Client &client);
 
 		// exception
 		class ClientDisconnected: public std::exception {

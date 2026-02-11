@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/10 15:23:44 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/11 10:08:04 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/11 19:51:44 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,6 @@ Response Server::getResponse(Request &request) {
 				response.setContentTypeByPath(path);
 			}
 		}
-			// send file on directory
 		closedir(dir);
 	} else {
 		// Check if its a CGI

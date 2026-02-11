@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/04 18:32:30 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/05 00:27:35 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/11 19:34:16 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,10 @@
 # include <map>
 # include <string>
 
-class Headers: public std::map<std::string, std::string> {};
+class Headers: public std::map<std::string, std::string> {
+	public:
+		bool has(std::string key);
+		unsigned long getContentLength(void);
+};
 
 #endif

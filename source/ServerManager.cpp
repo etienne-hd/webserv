@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/07 22:51:27 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/10 18:21:12 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/11 19:31:06 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 #include <sys/select.h>
 #include <vector>
 #include <signal.h>
+#include <sys/socket.h>
 
 int isRunning = 1;
 
@@ -65,7 +66,7 @@ void ServerManager::run(void) {
 			if (FD_ISSET(serverSocket, &read_sockets)) {
 				// NEW CONNECTION
 				try {
-					Client client = server->onNewClient();
+					Client client = server->acceptClient();
 					FD_SET(client.getSocket(), &_master_socket);	
 					logger << DEBUG << client << " > New client" << ENDL;
 				} catch (std::exception &e) {
@@ -73,24 +74,50 @@ void ServerManager::run(void) {
 				}
 			}
 			
-			std::vector<Client> clientSockets = server->getClients();
+			std::vector<Client> &clientSockets = server->getClients();
+			std::vector<Client> clientToRemove;
 
 			// clients socket
 			for (std::vector<Client>::iterator client = clientSockets.begin(); client != clientSockets.end(); ++client) {
-				if (FD_ISSET(client->getSocket(), &read_sockets) && FD_ISSET(client->getSocket(), &write_sockets)) {
-					// NEW DATA
+				// Read segment
+				if (FD_ISSET(client->getSocket(), &read_sockets)) {
 					try {
-						server->onRequest(*client);
-					} catch (Server::ClientDisconnected &e) {
-						logger << INFO << *client << " > Client disconnected" << ENDL;
-						server->closeClient(*client);
-						FD_CLR(client->getSocket(), &_master_socket);
+						server->receiveSegment(*client);
 					} catch (std::exception &e) {
-						logger << INFO << *client << " -> " << e.what() << ENDL;
-						server->closeClient(*client);
-						FD_CLR(client->getSocket(), &_master_socket);
+						logger << INFO << *client << " > " << e.what() << ENDL;
+						clientToRemove.push_back(*client);
 					}
 				}
+				
+				// Check if all segment was read
+				if (
+					server->isEndOfSegment(*client) && 
+					FD_ISSET(client->getSocket(), &write_sockets)
+				) {
+					if (server->onRequest(*client))
+						clientToRemove.push_back(*client);
+				}
+				// Check segment timeout
+				else if (
+					client->getTotalSegment() != 0 && 
+					time(__null) > client->getSegmentTimeout() + 5 &&
+					FD_ISSET(client->getSocket(), &write_sockets)
+				) {
+					server->onSegmentTimeout(*client);
+					clientToRemove.push_back(*client);
+				}
+				
+				// Keep Alive Timeout
+				if (time(__null) > client->getClientTimeout() + server->getConfig().keepalive_timeout) {
+					server->onKeepAliveTimeout(*client);
+					clientToRemove.push_back(*client);
+				}
+			}
+
+			// clients to remove
+			for (std::vector<Client>::iterator client = clientToRemove.begin(); client != clientToRemove.end(); ++client) {
+				server->closeClient(*client);
+				FD_CLR(client->getSocket(), &_master_socket);
 			}
 		}
 	}

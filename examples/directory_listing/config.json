@@ -1,6 +1,6 @@
 [
 	{
-		"name": "hello world",
+		"name": "directory listing",
 		"listen": "0.0.0.0:8080",
 		"locations": [
 			{
