@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/08 19:58:41 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/11 10:43:45 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/11 10:47:32 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,6 @@
 #include <string>
 #include <fcntl.h>
 #include <sys/socket.h>
-
-#include "Request.hpp"
 
 static unsigned short getPort(std::string interface) {
 	unsigned long portPos = interface.find(":");

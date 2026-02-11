@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/08 19:56:16 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/10 14:44:34 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/11 10:47:38 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,6 @@
 # include <dirent.h>
 # include <netinet/in.h>
 # include <string>
-
-#include "Request.hpp"
 
 template <typename T>
 void delete_vector(T &vector) {
