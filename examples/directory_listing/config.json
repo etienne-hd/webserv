@@ -1,0 +1,21 @@
+[
+	{
+		"name": "hello world",
+		"listen": "0.0.0.0:8080",
+		"locations": [
+			{
+				"uri": "/",
+				"path": "./examples/directory_listing/"
+			}
+		],
+		"directory_listing_enabled": true,
+		"document_index": "/",
+		"allowed_methods": ["GET"],
+		"redirections": [
+			{
+				"uri": "/",
+				"redirect": "/folder"
+			}
+		]
+	}
+]

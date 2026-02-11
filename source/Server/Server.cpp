@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/07 22:19:14 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/10 18:52:03 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/11 10:32:13 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,7 @@ void Server::onRequest(Client &client) {
 	Response response;
 
 	std::string rawRequest = this->getRawRequest(client.getSocket());
+	logger << DEBUG << "raw request: \n" << rawRequest << ENDL;
 	try {
 		request = Request(rawRequest);
 	} catch (Request::BadRequest &e) {
@@ -86,8 +87,11 @@ void Server::onRequest(Client &client) {
 		response = this->getErrorResponse(501);
 	else if (request.getContent().length() > _config.max_body_size)
 		response = this->getErrorResponse(413);
-	else
+	else if (request.getMethod() == GET)
 		response = this->getResponse(request);
+	else if (request.getMethod() == POST) {
+		// create file
+	}
 	logger << INFO << client << " -> " << response.getStatusCode() << " " << request.getRawMethod() << " " << request.getUri() << ENDL;
 	sendResponse(client, response);
 }

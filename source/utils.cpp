@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/08 19:58:41 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/10 17:54:54 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/11 10:43:45 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,7 +111,7 @@ bool isSamePath(std::string path1, std::string path2) {
 	if (*(path1.end() - 1) == '/')
 		path1.erase(path1.end() - 1);
 	if (*(path2.end() - 1) == '/')
-		path1.erase(path1.end() - 1);
+		path2.erase(path2.end() - 1);
 	return (path1 == path2);
 }
 
