@@ -104,3 +104,23 @@ Response Server::getErrorResponse(int status_code) {
 	}
 	return (response);
 }
+
+std::string Server::getFileListing(DIR *dir, const std::string &currentUri) {
+	struct dirent *entry = readdir(dir);
+	std::stringstream ss;
+
+	ss << "<h1>Index of " << currentUri << "</h1>";
+	ss << "<hr style='width: 100%;'/>";
+	ss << "<ul>";
+	while (entry != NULL) {
+		ss << "<li>"
+		<< "<a href='" << currentUri + (currentUri[currentUri.length() - 1] != '/' ? "/" : "")
+		+ entry->d_name << "'>"
+		<< entry->d_name << (entry->d_type == DT_DIR ? "/" : "")
+		<< "</a>"
+		<< "</li>";
+		entry = readdir(dir);
+	}
+	ss << "<ul/>";
+	return ss.str();
+}
