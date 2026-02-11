@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/09 04:28:41 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/10 18:17:56 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/11 10:07:29 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ static void removeDuplicateSlash(std::string &s) {
 	}
 }
 
-std::string Server::locationResolver(std::string &uri) const {
+std::string Server::locationResolver(std::string uri) const {
 	std::map<std::string, std::string> locationsMap = _config.locations;
 	std::map<std::string, std::string>::const_iterator locations = locationsMap.begin();
 	std::string closest;

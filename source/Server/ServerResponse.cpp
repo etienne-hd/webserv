@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/10 15:23:44 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/10 19:12:14 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/11 10:08:04 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,8 +49,7 @@ Response Server::getResponse(Request &request) {
 			response.getContentType() = "text/html";
 			response.getContent() = content;
 		} else {
-			std::string file_on_directory = _config.file_on_directory;
-			path = this->locationResolver(file_on_directory);
+			path = this->locationResolver(_config.file_on_directory);
 			std::fstream file(path.c_str());
 			if (!file.is_open()) {
 				response = getErrorResponse(404);

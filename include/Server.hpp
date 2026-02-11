@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/04 18:30:31 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/10 18:43:51 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/11 10:07:48 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ class Server {
 		bool isRedirection(std::string uri) const;
 		std::string getRedirection(std::string uri) const;
 		
-		std::string locationResolver(std::string &uri) const;
+		std::string locationResolver(std::string uri) const;
 		bool isAllowedMethod(Method method);
 
 	public:
