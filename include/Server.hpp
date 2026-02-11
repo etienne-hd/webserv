@@ -13,6 +13,8 @@
 #ifndef SERVER_HPP
 # define SERVER_HPP
 
+#include <dirent.h>
+
 # include "Config.hpp"
 # include "Client.hpp"
 # include "Response.hpp"
@@ -41,6 +43,7 @@ class Server {
 		
 		std::string locationResolver(std::string &uri) const;
 		bool isAllowedMethod(Method method);
+		static std::string getFileListing(DIR *dir, const std::string &currentUri);
 
 	public:
 		Server(const Config config);

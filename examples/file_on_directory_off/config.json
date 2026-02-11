@@ -5,7 +5,7 @@
 		"locations": [
 			{
 				"uri": "/",
-				"path": "./examples/file_on_directory/"
+				"path": "./examples/file_on_directory_off/"
 			}
 		],
 		"directory_listing_enabled": true,
