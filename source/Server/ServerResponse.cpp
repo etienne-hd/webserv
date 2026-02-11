@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/10 15:23:44 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/11 19:51:44 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/11 20:29:43 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,12 @@
 #include "Logger.hpp"
 #include "utils.hpp"
 
-#include <fstream>
+#include <cstring>
 #include <netinet/in.h>
 #include <sstream>
 #include <unistd.h>
 #include <dirent.h>
+#include <fcntl.h>
 
 void Server::sendResponse(Client &client, Response &response) {
 	std::string rawResponse = response.build();
@@ -42,34 +43,29 @@ Response Server::getResponse(Request &request) {
 	std::string path = locationResolver(uri);
 
 	DIR *dir = getDirectory(path);
+	// if path is a directory
 	if (dir) {
 		logger << DEBUG << path << " is a directory" << ENDL;
+		// if directory listing is enabled
 		if (_config.directory_listing_enabled) {
 			std::string content = getFileListing(dir, request.getUri());
 			response.getContentType() = "text/html";
 			response.getContent() = content;
+		// else show file on directory
 		} else {
 			path = this->locationResolver(_config.file_on_directory);
-			std::fstream file(path.c_str());
-			if (!file.is_open()) {
-				response = getErrorResponse(404);
-			} else {
-				std::getline(file, response.getContent(), '\0');
-				response.setContentTypeByPath(path);
-			}
+			response = this->getFileResponse(path);
 		}
 		closedir(dir);
+	// else path is a file
 	} else {
 		// Check if its a CGI
-		std::fstream file(path.c_str());
-		if (!file.is_open()) {
-			response = getErrorResponse(404);
+		if (false) {
+
 		} else {
-			std::getline(file, response.getContent(), '\0');
-			response.setContentTypeByPath(path);
+			response = this->getFileResponse(path);
 		}
 	}
-
 	return (response);
 }
 
@@ -94,12 +90,37 @@ Response Server::getErrorResponse(int status_code) {
 		response.getContent() = getDefaultErrorContent(status_code);
 	else {
 		std::string path = this->locationResolver(error_pages[status_code]);
-		std::ifstream file(path.c_str());
-		if (file.is_open()) {
-			std::getline(file, response.getContent(), '\0');
+		response = this->getFileResponse(path);
+	}
+	return (response);
+}
+
+Response Server::getFileResponse(const std::string path) {
+	Response response;
+
+	int fd = open(path.c_str(), O_RDONLY);
+	if (fd == -1) {
+		response = this->getErrorResponse(404);
+	} else {
+		std::string content;
+		char buffer[8192];
+		int byteReads;
+		
+		while (1) {
+			byteReads = read(fd, buffer, sizeof(buffer));
+			if (byteReads <= 0)
+				break;
+			content += std::string(buffer, byteReads);
+		}
+		if (byteReads == -1) {
+			logger << ERROR << "Read error: " << std::strerror(errno) << ENDL;
+			response = this->getErrorResponse(500);
+		} else {
+			response.getStatusCode() = 200;
+			response.getContent() = content;
 			response.setContentTypeByPath(path);
-		} else
-			response.getContent() = getDefaultErrorContent(status_code);
+		}
+		close(fd);
 	}
 	return (response);
 }

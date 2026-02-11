@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/04 18:30:31 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/11 19:30:13 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/11 20:13:45 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,10 @@ class Server {
 		std::string getRawRequest(int clientSoscket) const;
 		
 		void sendResponse(Client &client, Response &response);
+		
 		Response getResponse(Request &request);
 		Response getErrorResponse(int status_code);
+		Response getFileResponse(std::string path);
 		
 		bool isRedirection(std::string uri) const;
 		std::string getRedirection(std::string uri) const;

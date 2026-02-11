@@ -12,7 +12,7 @@ a static HTTP server
 - [ ] File upload
 - [x] Directory Listing
 - [x] Default error page
-- [ ] Better Read
+- [x] Better Read
 
 ## Known issue
 - [ ] Leak when socket initialization fail
