@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/09 20:17:45 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/11 19:37:05 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/11 20:08:42 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,6 @@ std::string Response::getStatusCodeText(int status_code) {
 	statusCodeTexts[403] = "Forbidden";
 	statusCodeTexts[404] = "Not Found";
 	statusCodeTexts[408] = "Request Timeout";
-	statusCodeTexts[411] = "Length Required";
 	statusCodeTexts[413] = "Content Too Large";
 	statusCodeTexts[429] = "Too Many Requests";
 	
