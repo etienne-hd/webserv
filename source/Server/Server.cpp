@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/07 22:19:14 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/11 19:57:29 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/11 20:11:49 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,8 +105,6 @@ bool Server::isEndOfSegment(Client &client) {
 	} catch (std::exception &e) {
 		return (true); // 400 Bad Request
 	}
-	if (!request.getHeaders().has("content-length"))
-		return (true); // 411 Length Required
 	
 	unsigned long contentLength = request.getHeaders().getContentLength();
 	if (contentLength > this->_config.max_body_size)
