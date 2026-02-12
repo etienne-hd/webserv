@@ -16,6 +16,7 @@ a static HTTP server
 - [x] Better Read
 - [x] Request init parameters map
 - [ ] Show port on << client overload
+- [ ] Check depth of the uri
 
 ## Known issue
 - [ ] Leak when socket initialization fail
