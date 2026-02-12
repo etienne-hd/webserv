@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/07 22:51:27 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/12 22:38:05 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/12 22:45:00 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,7 +113,7 @@ void ServerManager::run(void) {
 				}
 				
 				// Check segment timeout
-				else if (
+				if (
 					request.getSegmentTimeout() != -1 && 
 					time(__null) > request.getSegmentTimeout() + 5
 				) {
