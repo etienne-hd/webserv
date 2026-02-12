@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/07 22:19:14 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/12 22:25:40 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/12 22:33:54 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,9 +107,10 @@ bool Server::onRequest(Client &client) {
 	else
 		response = this->getErrorResponse(RESPONSE_BAD_REQUEST);
 
+	std::string connection = request.getHeaders()["connection"];
 	sendResponse(client, response);
 	
-	if (request.getHeaders()["connection"] == "keep-alive")
+	if (connection == "keep-alive")
 		return (false);
 	else
 		return (true);

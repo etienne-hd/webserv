@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/09 19:14:35 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/12 20:29:09 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/12 22:31:31 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,6 @@ bool Client::operator==(const Client &client) {
 }
 
 std::ostream &operator<<(std::ostream &stream, const Client &client) {
-	stream << client.getAddress();
+	stream << client.getAddress() << ":" << client.getRawPort();
 	return (stream);
 }
