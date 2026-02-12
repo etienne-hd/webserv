@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/07 22:19:14 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/12 13:58:31 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/12 15:01:50 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ void Server::receiveSegment(Client &client) {
 	// Re-set segment timeout
 	client.getSegmentTimeout() = time(__null);
 	client.getClientTimeout() = time(__null);
-	char buffer[65536];
+	char buffer[262144];
 	
 	ssize_t byteReads = recv(client.getSocket(), buffer, sizeof(buffer), 0);
 	if (byteReads == 0) {
@@ -147,8 +147,8 @@ bool Server::onRequest(Client &client) {
 		response = this->getResponse(request); // Get file / folder
 	else if (request.getMethod() == POST)
 		response = this->getCreateFileResponse(request);
-	else if (request.getMethod() == DELETE) {}
-		// delete file
+	else if (request.getMethod() == DELETE)
+		response = this->getDeleteFileResponse(request);
 	else
 		response = this->getErrorResponse(400);
 

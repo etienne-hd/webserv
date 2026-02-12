@@ -6,10 +6,11 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/10 15:23:44 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/12 14:20:25 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/12 17:23:13 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "Request.hpp"
 #include "Response.hpp"
 #include "Server.hpp"
 #include "Logger.hpp"
@@ -135,12 +136,34 @@ Response Server::getCreateFileResponse(Request &request) {
 		if (fd != -1) {
 			write(fd, request.getContent().c_str(), request.getContent().length());
 			response.getStatusCode() = 201;
+			close(fd);
 		} else {
 			response = this->getErrorResponse(500);
 		}
 	} else {
 		response = this->getErrorResponse(503);
 	}
+
+	return (response);
+}
+
+Response Server::getDeleteFileResponse(Request &request) {
+	Response response;
+
+	if (_config.file_upload_enabled) {
+		std::string path = locationResolver(_config.file_upload_directory) + request.getUri();
+		logger << DEBUG << "Trying to remove file at " << path << ENDL;
+		if (access(path.c_str(), F_OK) == 0) {
+			if (std::remove(path.c_str()) != -1) {
+				response.getStatusCode() = 200;
+			} else {
+				logger << DEBUG << "Unable to remove file at " << path << " reason: " << std::strerror(errno) << ENDL;
+				response = this->getErrorResponse(500);
+			}
+		} else // No such file or directory
+			response = this->getErrorResponse(404);
+	} else
+		response = this->getErrorResponse(503);
 
 	return (response);
 }

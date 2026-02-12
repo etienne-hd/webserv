@@ -2,7 +2,7 @@
 	{
 		"name": "file upload",
 		"listen": "0.0.0.0:8080",
-		"max_body_size": 16777216,
+		"max_body_size": 64000000,
 		"locations": [
 			{
 				"uri": "/",

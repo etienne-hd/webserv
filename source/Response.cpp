@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/09 20:17:45 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/11 20:08:42 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/12 14:34:51 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ std::string Response::getStatusCodeText(int status_code) {
 	
 	statusCodeTexts[200] = "OK";
 	statusCodeTexts[204] = "No Content";
+	statusCodeTexts[201] = "Created";
 	
 	statusCodeTexts[301] = "Moved Permanently";
 	
