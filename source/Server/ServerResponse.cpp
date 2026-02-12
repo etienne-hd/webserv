@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/10 15:23:44 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/11 20:29:43 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/12 13:30:00 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,7 +128,8 @@ Response Server::getFileResponse(const std::string path) {
 std::string Server::getFileListing(DIR *dir, const std::string &currentUri) {
 	struct dirent *entry = readdir(dir);
 	std::stringstream ss;
-
+	
+	ss << "<html><body>";
 	ss << "<h1>Index of " << currentUri << "</h1>";
 	ss << "<hr style='width: 100%;'/>";
 	ss << "<ul>";
@@ -142,5 +143,6 @@ std::string Server::getFileListing(DIR *dir, const std::string &currentUri) {
 		entry = readdir(dir);
 	}
 	ss << "<ul/>";
+	ss << "</html></body>";
 	return ss.str();
 }
