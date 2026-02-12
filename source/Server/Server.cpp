@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/07 22:19:14 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/12 15:01:50 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/12 18:13:34 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,7 +141,7 @@ bool Server::onRequest(Client &client) {
 		response = this->getErrorResponse(501); // Not Implemented
 	else if (request.getContent().length() > _config.max_body_size || contentLength > _config.max_body_size)
 		response = this->getErrorResponse(413); // Content Too Large
-	else if (request.getContent().length() != contentLength)
+	else if (request.getContent().length() != contentLength || request.getUri()[0] != '/')
 		response = this->getErrorResponse(400);
 	else if (request.getMethod() == GET)
 		response = this->getResponse(request); // Get file / folder
