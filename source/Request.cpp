@@ -6,11 +6,12 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/09 02:45:56 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/12 08:39:42 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/12 19:02:50 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Request.hpp"
+#include "Logger.hpp"
 #include "Method.hpp"
 #include "utils.hpp"
 
@@ -27,6 +28,39 @@ static bool expectedToken(std::string &s, std::string::iterator &it, std::string
 		return (1);
 	}
 	return (0);
+}
+
+void Request::initParameters(void) {
+	size_t pos = _raw_uri.find("?");
+	if (pos == std::string::npos)
+		return; // No parameters in request
+	_raw_parameters = std::string(_raw_uri, pos + 1);
+
+	std::string::iterator it = _raw_parameters.begin();
+	while (it != _raw_parameters.end()) {
+		std::string key;
+		while (it != _raw_parameters.end() && !expectedToken(_raw_parameters, it, "=")) {
+			key += *it;
+			it++;
+		}
+
+		std::string value;
+		while (it != _raw_parameters.end() && !expectedToken(_raw_parameters, it, "&")) {
+			value += *it;
+			it++;
+		}
+
+		_parameters[key] = value;
+	}
+}
+
+void Request::initUri(void) {
+	size_t pos = _raw_uri.find("?");
+	if (pos == std::string::npos) {
+		_uri = _raw_uri;
+		return; // No parameters in request
+	}
+	_uri = std::string(_raw_uri, 0, pos);
 }
 
 Request::Request(void) {}
@@ -46,7 +80,7 @@ Request::Request(std::string rawRequest) {
 			currentTokenType = URI;
 			currentToken.clear();
 		} else if (currentTokenType == URI && expectedToken(rawRequest, it, " ")) {
-			_uri = currentToken;
+			_raw_uri = currentToken;
 			currentTokenType = HTTP_VERSION;
 			currentToken.clear();
 		} else if (currentTokenType == HTTP_VERSION && expectedToken(rawRequest, it, "\r\n")) {
@@ -80,4 +114,6 @@ Request::Request(std::string rawRequest) {
 	)
 		throw Request::BadRequest();
 	_content = currentToken;
+	this->initParameters();
+	this->initUri();
 }
