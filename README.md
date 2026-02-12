@@ -10,7 +10,7 @@ a static HTTP server
 - [x] Check Allowed Method
 - [x] Redirection
 - [x] File upload
-- [ ] File delete
+- [x] File delete
 - [x] Directory Listing
 - [x] Default error page
 - [x] Better Read
