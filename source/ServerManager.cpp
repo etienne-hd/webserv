@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/07 22:51:27 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/12 21:42:52 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/12 22:38:05 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,10 @@ void ServerManager::run(void) {
 				Request &request = client->getRequest();
 
 				// Read segments
-				if (FD_ISSET(client->getSocket(), &read_sockets)) {
+				if (
+					FD_ISSET(client->getSocket(), &read_sockets) &&
+					request.getPreResponseStatusCode() == -1
+				){
 					try {
 						// First Segment (check http request syntax)
 						if (request.getSegmentCount() == 0)
