@@ -6,14 +6,13 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/04 18:32:03 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/12 19:01:12 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/12 19:22:10 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef REQUEST_HPP
 # define REQUEST_HPP
 
-#include "Cookies.hpp"
 #include "Headers.hpp"
 # include "Method.hpp"
 
@@ -37,7 +36,6 @@ class Request {
 		std::string _raw_uri;
 		std::string _http_version;
 		Headers _headers;
-		Cookies _cookies;
 		std::map<std::string, std::string> _parameters;
 		std::string _raw_parameters;
 		std::string _content;
@@ -55,7 +53,6 @@ class Request {
 		std::string getRawUri(void) const { return _raw_uri; }
 		std::string getHTTPVersion(void) const { return _http_version; }
 		Headers getHeaders(void) const { return _headers; }
-		Cookies getCookies(void) const { return _cookies; }
 		std::map<std::string, std::string> getParameters(void) const { return _parameters; }
 		std::string getRawParameters(void) const { return _raw_parameters; }
 		std::string getContent(void) const { return _content; }

@@ -6,12 +6,11 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/09 02:45:56 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/12 19:02:50 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/12 19:22:04 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Request.hpp"
-#include "Logger.hpp"
 #include "Method.hpp"
 #include "utils.hpp"
 

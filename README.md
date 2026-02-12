@@ -14,8 +14,7 @@ a static HTTP server
 - [x] Directory Listing
 - [x] Default error page
 - [x] Better Read
-- [ ] Request init parameters map
-- [ ] Request init cookies map
+- [x] Request init parameters map
 
 ## Known issue
 - [ ] Leak when socket initialization fail
