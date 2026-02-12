@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/08 19:58:41 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/11 16:32:55 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/12 09:47:49 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,10 @@ static unsigned short getPort(std::string interface) {
 	if (portStr.empty())
 		throw std::runtime_error("No port provided");
 	int port = std::atoi(portStr.c_str());
-	if (port > 65536)
-		throw std::runtime_error("The port cannot be greater than 65536!");
+	if (port > 65535)
+		throw std::runtime_error("The port cannot be greater than 65535!");
+	if (port == 0)
+		throw std::runtime_error("The port cannot be equal to 0!");
 	logger << DEBUG << "Port: " << port << ENDL;
 	return (htons(port));
 }

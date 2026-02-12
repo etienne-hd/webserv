@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/07 22:19:14 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/12 08:37:18 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/12 10:01:15 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,17 +72,15 @@ Client Server::acceptClient(void) {
 
 void Server::receiveSegment(Client &client) {
 	// Re-set segment timeout
-	if (client.getTotalSegment() == 0)
-		client.getSegmentTimeout() = time(__null);
-	char *buffer = new char[65536];
+	client.getSegmentTimeout() = time(__null);
+	client.getClientTimeout() = time(__null);
+	char buffer[65536];
 	
-	ssize_t byteReads = recv(client.getSocket(), buffer, 65536, 0);
+	ssize_t byteReads = recv(client.getSocket(), buffer, sizeof(buffer), 0);
 	if (byteReads == 0) {
-		delete[] buffer;
 		throw Server::ClientDisconnected();
 	}
 	if (byteReads == -1) {
-		delete[] buffer;
 		throw std::runtime_error(std::strerror(errno));
 	}
 	
@@ -90,8 +88,6 @@ void Server::receiveSegment(Client &client) {
 	client.getRawRequest() += rawRequest;
 	client.getTotalSegment()++;
 	logger << DEBUG << client << " > Received segment #" << client.getTotalSegment() << " of " << byteReads << " byte(s)" << ENDL;
-	
-	delete[] buffer;
 }
 
 // Check if the server need to read more segment from the client.
