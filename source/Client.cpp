@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/09 19:14:35 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/11 19:37:37 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/12 20:29:09 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,14 +20,6 @@ Client::Client(int socket, unsigned int rawAddress, unsigned short rawPort) {
 	_raw_port = rawPort;
 	_client_timeout = time(__null);
 	_total_request = 0;
-	_total_segment = 0;
-	_segment_timeout = -1;
-}
-
-void Client::resetSegment(void) {
-	_current_segment.clear();
-	_total_segment = 0;
-	_segment_timeout = -1;
 }
 
 bool Client::operator==(const Client &client) {

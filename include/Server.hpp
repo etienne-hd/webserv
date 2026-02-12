@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/04 18:30:31 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/12 13:45:01 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/12 22:05:26 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,10 +32,10 @@ class Server {
 		std::vector<Client> _clients;
 
 
-		std::string getRawRequest(int clientSoscket) const;
+		std::string getRawRequest(int clientSocket) const;
 		
+		// Response
 		void sendResponse(Client &client, Response &response);
-		
 		Response getResponse(Request &request);
 		Response getErrorResponse(int status_code);
 		Response getFileResponse(std::string path);
@@ -65,15 +65,26 @@ class Server {
 
 		// event
 		Client acceptClient(void);
-		void receiveSegment(Client &client);
+		
+		std::string receiveSegment(Client &client);
+		void receiveFirstSegment(Client &client);
+		void receiveOtherSegment(Client &client);
 		bool isEndOfSegment(Client &client);
+		
 		bool onRequest(Client &client);
+		
 		void onSegmentTimeout(Client &client);
 		void onKeepAliveTimeout(Client &client);
 
 		// exception
 		class ClientDisconnected: public std::exception {
 			virtual const char *what(void) const throw() { return "Client disconnected."; }
+		};
+		class BadRequest: public std::exception {
+			virtual const char *what(void) const throw() { return "Request is not a valid HTTP Request."; }
+		};
+		class MaxBodySize: public std::exception {
+			virtual const char *what(void) const throw() { return "Request content length exceeds the maximum body size allowed by the server."; }
 		};
 };
 

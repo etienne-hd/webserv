@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/07 22:19:14 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/12 19:17:14 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/12 22:08:26 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include "Headers.hpp"
 #include "Method.hpp"
 #include "Request.hpp"
+#include "status_code.hpp"
 #include "utils.hpp"
 #include "Logger.hpp"
 
@@ -73,92 +74,43 @@ Client Server::acceptClient(void) {
 	return (client);
 }
 
-void Server::receiveSegment(Client &client) {
-	// Re-set segment timeout
-	client.getSegmentTimeout() = time(__null);
-	client.getClientTimeout() = time(__null);
-	char buffer[262144];
-	
-	ssize_t byteReads = recv(client.getSocket(), buffer, sizeof(buffer), 0);
-	if (byteReads == 0) {
-		throw Server::ClientDisconnected();
-	}
-	if (byteReads == -1) {
-		throw std::runtime_error(std::strerror(errno));
-	}
-	
-	std::string rawRequest = std::string(buffer, byteReads);
-	client.getRawRequest() += rawRequest;
-	client.getTotalSegment()++;
-	logger << DEBUG << client << " > Received segment #" << client.getTotalSegment() << " of " << byteReads << " byte(s)" << ENDL;
-}
-
-// Check if the server need to read more segment from the client.
-// return true when all segment is read or when the request has error in it
-bool Server::isEndOfSegment(Client &client) {
-	std::string currentSegment = client.getRawRequest();
-	if (currentSegment.empty())
-		return (false);
-
-	Request request;
-	try {
-		request = Request(currentSegment);
-	} catch (std::exception &e) {
-		return (true); // 400 Bad Request
-	}
-
-	unsigned long contentLength = request.getHeaders().getContentLength();
-	if (contentLength > this->_config.max_body_size)
-		return (true); // 413 Content Too Large
-
-	return (request.getContent().length() >= contentLength);
-}
-
 // onRequest is called when an incomming full request is ready
 // It return a boolean, if true the socket must be closed
 bool Server::onRequest(Client &client) {
-	Request request;
+	Request &request = client.getRequest();
+	
 	Response response;
-
-	client.getTotalRequest()++;
-	client.getClientTimeout() = time(__null);
-	std::string rawContent = client.getRawRequest();
-	client.resetSegment();
-	try {
-		request = Request(rawContent);
-	} catch (Request::BadRequest &e) {
-		logger << DEBUG << client << " -> " << "Did a bad request (Invalid HTTP Request)." << ENDL;
-		response = this->getErrorResponse(400);
+	int preResponseStatusCode = request.getPreResponseStatusCode();
+	if (preResponseStatusCode != -1) {
+		response = this->getErrorResponse(preResponseStatusCode);
 		sendResponse(client, response);
 		return (true);
 	}
 
-	unsigned int contentLength = request.getHeaders().getContentLength();
-	if (request.getHTTPVersion() != "HTTP/1.1") {
-		logger << DEBUG << "Inavlid HTTP Version: " << request.getHTTPVersion() << ENDL;
-		response = this->getErrorResponse(505); // 505 HTTP Version Not Supported
-	} else if (!this->isAllowedMethod(request.getMethod()))
-		response = this->getErrorResponse(501); // Not Implemented
-	else if (request.getContent().length() > _config.max_body_size || contentLength > _config.max_body_size)
-		response = this->getErrorResponse(413); // Content Too Large
-	else if (request.getContent().length() != contentLength || request.getUri()[0] != '/')
-		response = this->getErrorResponse(400);
-	else if (request.getMethod() == GET)
+	// These checks can only be performed once all segments are connected.
+	if (request.getContent().length() != request.getHeaders().getContentLength()) {
+		response = this->getErrorResponse(RESPONSE_BAD_REQUEST);
+		sendResponse(client, response);
+		return (true);
+	}
+	if (request.getContent().length() > _config.max_body_size) {
+		response = this->getErrorResponse(RESPONSE_CONTENT_TOO_LARGE);
+		sendResponse(client, response);
+		return (true);
+	}
+	
+	if (request.getMethod() == GET)
 		response = this->getResponse(request); // Get file / folder
 	else if (request.getMethod() == POST)
 		response = this->getCreateFileResponse(request);
 	else if (request.getMethod() == DELETE)
 		response = this->getDeleteFileResponse(request);
 	else
-		response = this->getErrorResponse(400);
+		response = this->getErrorResponse(RESPONSE_BAD_REQUEST);
 
-	logger << INFO << client << " (" << client.getTotalRequest() << ")" << " -> " << response.getStatusCode() << " " << request.getRawMethod() << " " << request.getRawUri() << ENDL;
 	sendResponse(client, response);
 	
-	if (
-		request.getHeaders()["connection"] == "keep-alive" &&
-		!(request.getContent().length() > _config.max_body_size || contentLength > _config.max_body_size)
-	)
+	if (request.getHeaders()["connection"] == "keep-alive")
 		return (false);
 	else
 		return (true);

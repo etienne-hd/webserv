@@ -6,13 +6,14 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/09 20:17:45 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/12 14:34:51 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/12 21:39:24 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Response.hpp"
 #include "Cookies.hpp"
 #include "Logger.hpp"
+#include "status_code.hpp"
 
 #include <map>
 #include <sstream>
@@ -26,24 +27,25 @@ Response::Response(void) {
 std::string Response::getStatusCodeText(int status_code) {
 	std::map<int, std::string> statusCodeTexts;
 	
-	statusCodeTexts[200] = "OK";
-	statusCodeTexts[204] = "No Content";
-	statusCodeTexts[201] = "Created";
+	statusCodeTexts[RESPONSE_OK] = "OK";
+	statusCodeTexts[RESPONSE_NO_CONTENT] = "No Content";
+	statusCodeTexts[RESPONSE_CREATED] = "Created";
 	
-	statusCodeTexts[301] = "Moved Permanently";
+	statusCodeTexts[RESPONSE_MOVED_PERMANENTLY] = "Moved Permanently";
 	
-	statusCodeTexts[400] = "Bad Request";
-	statusCodeTexts[401] = "Unauthorized";
-	statusCodeTexts[403] = "Forbidden";
-	statusCodeTexts[404] = "Not Found";
-	statusCodeTexts[408] = "Request Timeout";
-	statusCodeTexts[413] = "Content Too Large";
-	statusCodeTexts[429] = "Too Many Requests";
+	statusCodeTexts[RESPONSE_BAD_REQUEST] = "Bad Request";
+	statusCodeTexts[RESPONSE_UNAUTHORIZED] = "Unauthorized";
+	statusCodeTexts[RESPONSE_FORBIDDEN] = "Forbidden";
+	statusCodeTexts[RESPONSE_NOT_FOUND] = "Not Found";
+	statusCodeTexts[RESPONSE_REQUEST_TIMEOUT] = "Request Timeout";
+	statusCodeTexts[RESPONSE_CONTENT_TOO_LARGE] = "Content Too Large";
+	statusCodeTexts[RESPONSE_TOO_MANY_REQUESTS] = "Too Many Requests";
 	
-	statusCodeTexts[500] = "Internal Server Error";
-	statusCodeTexts[501] = "Not Implemented";
-	statusCodeTexts[502] = "Bad Gateway";
-	statusCodeTexts[505] = "HTTP Version Not Supported";
+	statusCodeTexts[RESPONSE_INTERNAL_SERVER_ERROR] = "Internal Server Error";
+	statusCodeTexts[RESPONSE_NOT_IMPLEMENTED] = "Not Implemented";
+	statusCodeTexts[RESPONSE_BAD_GATEWAY] = "Bad Gateway";
+	statusCodeTexts[RESPONSE_SERVICE_UNAVAILABLE] = "Service Unavailable";
+	statusCodeTexts[RESPONSE_HTTP_VERSION_NOT_SUPPORTED] = "HTTP Version Not Supported";
 
 	std::string statusCodeText = statusCodeTexts[status_code];
 	if (statusCodeText.empty()) {

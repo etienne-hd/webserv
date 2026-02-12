@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/10 15:23:44 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/12 17:23:13 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/12 22:06:40 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include "Response.hpp"
 #include "Server.hpp"
 #include "Logger.hpp"
+#include "status_code.hpp"
 #include "utils.hpp"
 
 #include <cstring>
@@ -24,6 +25,9 @@
 #include <fcntl.h>
 
 void Server::sendResponse(Client &client, Response &response) {
+	logger << INFO << client << " (" << client.getTotalRequest() << ")" << " -> " << response.getStatusCode() << " " << client.getRequest().getRawMethod() << " " << client.getRequest().getRawUri() << ENDL;
+	client.resetRequest();
+
 	std::string rawResponse = response.build();
 	if (send(client.getSocket(), rawResponse.c_str(), rawResponse.length(), 0) == -1) {
 		throw std::runtime_error("Unable to send response");
@@ -37,7 +41,7 @@ Response Server::getResponse(Request &request) {
 
 	if (this->isRedirection(uri)) {
 		std::map<std::string, std::string> redirections = this->_config.redirections;
-		response.getStatusCode() = 301;
+		response.getStatusCode() = RESPONSE_MOVED_PERMANENTLY;
 		response.getHeaders()["Location"] = this->getRedirection(uri);
 		return (response);
 	}
@@ -101,7 +105,7 @@ Response Server::getFileResponse(const std::string path) {
 
 	int fd = open(path.c_str(), O_RDONLY);
 	if (fd == -1) {
-		response = this->getErrorResponse(404);
+		response = this->getErrorResponse(RESPONSE_NOT_FOUND);
 	} else {
 		std::string content;
 		char buffer[8192];
@@ -115,9 +119,9 @@ Response Server::getFileResponse(const std::string path) {
 		}
 		if (byteReads == -1) {
 			logger << ERROR << "Read error: " << std::strerror(errno) << ENDL;
-			response = this->getErrorResponse(500);
+			response = this->getErrorResponse(RESPONSE_INTERNAL_SERVER_ERROR);
 		} else {
-			response.getStatusCode() = 200;
+			response.getStatusCode() = RESPONSE_OK;
 			response.getContent() = content;
 			response.setContentTypeByPath(path);
 		}
@@ -135,13 +139,13 @@ Response Server::getCreateFileResponse(Request &request) {
 		int fd = open(path.c_str(), O_WRONLY | O_CREAT, 0644);
 		if (fd != -1) {
 			write(fd, request.getContent().c_str(), request.getContent().length());
-			response.getStatusCode() = 201;
+			response.getStatusCode() = RESPONSE_CREATED;
 			close(fd);
 		} else {
-			response = this->getErrorResponse(500);
+			response = this->getErrorResponse(RESPONSE_INTERNAL_SERVER_ERROR);
 		}
 	} else {
-		response = this->getErrorResponse(503);
+		response = this->getErrorResponse(RESPONSE_SERVICE_UNAVAILABLE);
 	}
 
 	return (response);
@@ -155,15 +159,15 @@ Response Server::getDeleteFileResponse(Request &request) {
 		logger << DEBUG << "Trying to remove file at " << path << ENDL;
 		if (access(path.c_str(), F_OK) == 0) {
 			if (std::remove(path.c_str()) != -1) {
-				response.getStatusCode() = 200;
+				response.getStatusCode() = RESPONSE_OK;
 			} else {
 				logger << DEBUG << "Unable to remove file at " << path << " reason: " << std::strerror(errno) << ENDL;
-				response = this->getErrorResponse(500);
+				response = this->getErrorResponse(RESPONSE_INTERNAL_SERVER_ERROR);
 			}
 		} else // No such file or directory
-			response = this->getErrorResponse(404);
+			response = this->getErrorResponse(RESPONSE_NOT_FOUND);
 	} else
-		response = this->getErrorResponse(503);
+		response = this->getErrorResponse(RESPONSE_SERVICE_UNAVAILABLE);
 
 	return (response);
 }

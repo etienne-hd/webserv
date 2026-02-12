@@ -6,12 +6,13 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/07 22:51:27 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/12 08:30:26 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/12 21:42:52 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ServerManager.hpp"
 #include "Logger.hpp"
+#include "Request.hpp"
 #include "Server.hpp"
 
 #include <exception>
@@ -79,36 +80,49 @@ void ServerManager::run(void) {
 
 			// clients socket
 			for (std::vector<Client>::iterator client = clientSockets.begin(); client != clientSockets.end(); ++client) {
-				// Read segment
+				Request &request = client->getRequest();
+
+				// Read segments
 				if (FD_ISSET(client->getSocket(), &read_sockets)) {
 					try {
-						server->receiveSegment(*client);
+						// First Segment (check http request syntax)
+						if (request.getSegmentCount() == 0)
+							server->receiveFirstSegment(*client);
+						// Other (complete the content)
+						else
+							server->receiveOtherSegment(*client);
 					} catch (std::exception &e) {
 						logger << INFO << *client << " > " << e.what() << ENDL;
 						clientToRemove.push_back(*client);
 					}
 				}
-				// Check if all segment was read
+
+				// If the number of segment is above 0 &&
+				// we can write into socket &&
+				// the request is completely read
 				if (
+					request.getSegmentCount() > 0 &&
 					FD_ISSET(client->getSocket(), &write_sockets) &&
 					server->isEndOfSegment(*client)
 				) {
 					if (server->onRequest(*client))
 						clientToRemove.push_back(*client);
-					continue;
 				}
+				
 				// Check segment timeout
 				else if (
-					client->getTotalSegment() != 0 && 
-					time(__null) > client->getSegmentTimeout() + 5
+					request.getSegmentTimeout() != -1 && 
+					time(__null) > request.getSegmentTimeout() + 5
 				) {
+					// If we can write, send a 408 Request Timeout
+					// Close client connection
 					if (FD_ISSET(client->getSocket(), &write_sockets))
 						server->onSegmentTimeout(*client);
 					clientToRemove.push_back(*client);
 					continue;
 				}
 				
-				// Keep Alive Timeout
+				// Keep Alive timeout
 				if (time(__null) > client->getClientTimeout() + server->getConfig().keepalive_timeout) {
 					server->onKeepAliveTimeout(*client);
 					clientToRemove.push_back(*client);
