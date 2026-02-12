@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/07 22:51:27 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/11 19:31:06 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/12 08:30:26 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,23 +88,24 @@ void ServerManager::run(void) {
 						clientToRemove.push_back(*client);
 					}
 				}
-				
 				// Check if all segment was read
 				if (
-					server->isEndOfSegment(*client) && 
-					FD_ISSET(client->getSocket(), &write_sockets)
+					FD_ISSET(client->getSocket(), &write_sockets) &&
+					server->isEndOfSegment(*client)
 				) {
 					if (server->onRequest(*client))
 						clientToRemove.push_back(*client);
+					continue;
 				}
 				// Check segment timeout
 				else if (
 					client->getTotalSegment() != 0 && 
-					time(__null) > client->getSegmentTimeout() + 5 &&
-					FD_ISSET(client->getSocket(), &write_sockets)
+					time(__null) > client->getSegmentTimeout() + 5
 				) {
-					server->onSegmentTimeout(*client);
+					if (FD_ISSET(client->getSocket(), &write_sockets))
+						server->onSegmentTimeout(*client);
 					clientToRemove.push_back(*client);
+					continue;
 				}
 				
 				// Keep Alive Timeout

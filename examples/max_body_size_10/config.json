@@ -1,0 +1,15 @@
+[
+	{
+		"max_body_size": 10,
+		"name": "max body size 10",
+		"listen": "0.0.0.0:8080",
+		"locations": [
+			{
+				"uri": "/",
+				"path": "./examples/hello_world/"
+			}
+		],
+		"document_index": "",
+		"allowed_methods": ["GET", "POST"]
+	}
+]

@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/09 02:45:56 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/11 19:46:18 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/12 08:39:42 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,10 @@ Request::Request(std::string rawRequest) {
 			it++;
 		}
 	}
-	if (currentTokenType != CONTENT)
+	if (
+		currentTokenType != CONTENT ||
+		rawRequest.find("\r\n\r\n") == std::string::npos
+	)
 		throw Request::BadRequest();
 	_content = currentToken;
 }

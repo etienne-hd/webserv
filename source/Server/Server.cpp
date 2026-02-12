@@ -6,18 +6,20 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/07 22:19:14 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/11 20:11:49 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/12 08:37:18 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Config.hpp"
 #include "Server.hpp"
+#include "Headers.hpp"
 #include "Method.hpp"
 #include "Request.hpp"
 #include "utils.hpp"
 #include "Logger.hpp"
 
 #include <dirent.h>
+#include <map>
 #include <netinet/in.h>
 #include <stdexcept>
 #include <sys/socket.h>
@@ -87,7 +89,7 @@ void Server::receiveSegment(Client &client) {
 	std::string rawRequest = std::string(buffer, byteReads);
 	client.getRawRequest() += rawRequest;
 	client.getTotalSegment()++;
-	logger << DEBUG << client << " > Received segment #" << client.getTotalSegment() << " " << byteReads << " byte(s)" << ENDL;
+	logger << DEBUG << client << " > Received segment #" << client.getTotalSegment() << " of " << byteReads << " byte(s)" << ENDL;
 	
 	delete[] buffer;
 }
@@ -101,11 +103,11 @@ bool Server::isEndOfSegment(Client &client) {
 
 	Request request;
 	try {
-		request = Request();
+		request = Request(currentSegment);
 	} catch (std::exception &e) {
 		return (true); // 400 Bad Request
 	}
-	
+
 	unsigned long contentLength = request.getHeaders().getContentLength();
 	if (contentLength > this->_config.max_body_size)
 		return (true); // 413 Content Too Large
@@ -154,7 +156,10 @@ bool Server::onRequest(Client &client) {
 	logger << INFO << client << " (" << client.getTotalRequest() << ")" << " -> " << response.getStatusCode() << " " << request.getRawMethod() << " " << request.getUri() << ENDL;
 	sendResponse(client, response);
 	
-	if (request.getHeaders()["connection"] == "keep-alive")
+	if (
+		request.getHeaders()["connection"] == "keep-alive" &&
+		!(request.getContent().length() > _config.max_body_size || contentLength > _config.max_body_size)
+	)
 		return (false);
 	else
 		return (true);
