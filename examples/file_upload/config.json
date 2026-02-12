@@ -1,0 +1,24 @@
+[
+	{
+		"name": "file upload",
+		"listen": "0.0.0.0:8080",
+		"max_body_size": 16777216,
+		"locations": [
+			{
+				"uri": "/",
+				"path": "./examples/file_upload/"
+			}
+		],
+		"directory_listing_enabled": true,
+		"document_index": "/",
+		"allowed_methods": ["GET", "POST", "DELETE"],
+		"redirections": [
+			{
+				"uri": "/",
+				"redirect": "/files"
+			}
+		],
+		"file_upload_enabled": true,
+		"file_upload_directory": "/files"
+	}
+]

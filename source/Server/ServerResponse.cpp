@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/10 15:23:44 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/12 13:30:00 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/12 14:20:25 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,6 +122,26 @@ Response Server::getFileResponse(const std::string path) {
 		}
 		close(fd);
 	}
+	return (response);
+}
+
+Response Server::getCreateFileResponse(Request &request) {
+	Response response;
+	
+	if (_config.file_upload_enabled) {
+		std::string path = locationResolver(_config.file_upload_directory) + request.getUri();
+		logger << DEBUG << "Trying to create file at " << path << ENDL;
+		int fd = open(path.c_str(), O_WRONLY | O_CREAT, 0644);
+		if (fd != -1) {
+			write(fd, request.getContent().c_str(), request.getContent().length());
+			response.getStatusCode() = 201;
+		} else {
+			response = this->getErrorResponse(500);
+		}
+	} else {
+		response = this->getErrorResponse(503);
+	}
+
 	return (response);
 }
 

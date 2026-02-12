@@ -9,7 +9,8 @@ a static HTTP server
 - [x] Keep Alive Handler
 - [x] Check Allowed Method
 - [x] Redirection
-- [ ] File upload
+- [x] File upload
+- [ ] File delete
 - [x] Directory Listing
 - [x] Default error page
 - [x] Better Read
@@ -18,6 +19,7 @@ a static HTTP server
 
 ## Known issue
 - [ ] Leak when socket initialization fail
+- [ ] Other method (PATCH, PUT) failed
 
 ## Configuration
 ```json

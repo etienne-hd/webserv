@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/07 22:19:14 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/12 13:25:18 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/12 13:58:31 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,8 +145,8 @@ bool Server::onRequest(Client &client) {
 		response = this->getErrorResponse(400);
 	else if (request.getMethod() == GET)
 		response = this->getResponse(request); // Get file / folder
-	else if (request.getMethod() == POST) {}
-		// create file
+	else if (request.getMethod() == POST)
+		response = this->getCreateFileResponse(request);
 	else if (request.getMethod() == DELETE) {}
 		// delete file
 	else
