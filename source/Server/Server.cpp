@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/07 22:19:14 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/12 22:08:26 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/12 22:25:40 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,6 @@
 #include <sys/socket.h>
 #include <unistd.h>
 #include <vector>
-#include <cstring>
 
 Server::Server(const Config config): _config(config) {
 	_socket = -1;
