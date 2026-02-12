@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/07 22:19:14 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/12 10:01:15 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/12 13:25:18 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ int Server::initSocket(void) {
 	setsockopt(_socket, SOL_SOCKET, SO_REUSEADDR, &option, sizeof(option));
 	sockaddr_in socketAddress = getSocketAddress(_config.listen);
 	if (bind(_socket, (struct sockaddr*)&socketAddress, sizeof(socketAddress)) == -1) {
+		this->closeSocket();
 		throw std::runtime_error("Unable to bind address");
 	}
 	listen(_socket, 25);
@@ -53,8 +54,10 @@ void Server::closeSocket(void) {
 	}
 	if (close(_socket) == -1)
 		logger << CRITICAL << "Syscall close return -1" << ENDL;
-	else
+	else {
 		logger << DEBUG << "Server socket successfully closed." << ENDL;
+		_socket = -1;
+	}
 }
 
 Client Server::acceptClient(void) {
