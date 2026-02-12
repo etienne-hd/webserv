@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/04 18:30:31 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/12 22:05:26 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/12 22:24:46 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,9 +82,6 @@ class Server {
 		};
 		class BadRequest: public std::exception {
 			virtual const char *what(void) const throw() { return "Request is not a valid HTTP Request."; }
-		};
-		class MaxBodySize: public std::exception {
-			virtual const char *what(void) const throw() { return "Request content length exceeds the maximum body size allowed by the server."; }
 		};
 };
 
