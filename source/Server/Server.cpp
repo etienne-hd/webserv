@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/07 22:19:14 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/13 23:45:20 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/13 23:48:18 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,13 +116,6 @@ bool Server::onRequest(Client &client) {
 		return (false);
 	else
 		return (true);
-}
-
-void Server::onSegmentTimeout(Client &client) {
-
-	client.response = getErrorResponse(408);
-	sendResponse(client);
-	logger << INFO << client << " -> Segment timed out, connection closed." << ENDL; 
 }
 
 void Server::onKeepAliveTimeout(Client &client) {

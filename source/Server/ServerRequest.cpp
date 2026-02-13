@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/12 19:55:28 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/13 23:26:10 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/13 23:49:44 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -189,4 +189,10 @@ void Server::receiveOtherSegment(Client &client) {
 	std::string rawSegment = this->receiveSegment(client);
 
 	request.content += rawSegment;
+}
+
+void Server::onSegmentTimeout(Client &client) {
+	client.response = getErrorResponse(408);
+	sendResponse(client);
+	logger << INFO << client << " -> Segment timed out, connection closed." << ENDL; 
 }
