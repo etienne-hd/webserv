@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/12 19:55:28 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/13 15:41:44 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/13 16:48:30 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,12 +88,18 @@ static void initParameters(Request &request) {
 }
 
 static void initUri(Request &request) {
-	size_t pos = request.getRawUri().find("?");
+	std::string &uri = request.getUri();
+	std::string &rawUri = request.getRawUri();
+	size_t pos = rawUri.find("?");
 	if (pos == std::string::npos) {
-		request.getUri() = request.getRawUri();
-		return; // No parameters in request
+		uri = request.getRawUri();
+	} else {
+		uri = std::string(request.getRawUri(), 0, pos);
 	}
-	request.getUri() = std::string(request.getRawUri(), 0, pos);
+	removeDuplicateSlash(uri);
+	if (uri.length() > 1 && *(uri.end() - 1) == '/')
+		uri.erase(uri.end() - 1);
+	logger << CRITICAL << uri << ENDL;
 }
 
 static void parseRequest(Request &request, std::string rawSegment) {

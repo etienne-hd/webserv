@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/08 19:56:16 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/11 15:14:34 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/13 16:42:10 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,5 +30,7 @@ bool isSamePath(std::string path1, std::string path2);
 DIR *getDirectory(const std::string &path);
 std::string readFile(std::string fileName);
 void strToLower(std::string &s);
+std::string getFileExtension(const std::string &path);
+void removeDuplicateSlash(std::string &s);
 
 #endif

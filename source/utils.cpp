@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/08 19:58:41 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/12 09:47:49 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/13 16:42:04 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,5 +134,26 @@ void strToLower(std::string &s) {
 	for (std::string::iterator it = s.begin(); it != s.end(); it++) {
 		if (*it >= 'A' && *it <= 'Z')
 			*it += 32;
+	}
+}
+
+std::string getFileExtension(const std::string &path) {
+	std::string extension;
+
+	for (std::string::const_iterator it = path.begin(); it != path.end(); it++) {
+		if (*it == '.')
+			extension.clear();
+		extension += *it;
+	}
+	return (extension);
+}
+
+void removeDuplicateSlash(std::string &s) {
+	for (std::string::iterator it = s.begin(); it != s.end(); it++) {
+		if (*it == '/' && *(it + 1) == '/')
+		{
+			s.erase(it);
+			it--;
+		}
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/09 20:17:45 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/12 21:39:24 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/13 15:52:44 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include "Cookies.hpp"
 #include "Logger.hpp"
 #include "status_code.hpp"
+#include "utils.hpp"
 
 #include <map>
 #include <sstream>
@@ -56,14 +57,6 @@ std::string Response::getStatusCodeText(int status_code) {
 }
 
 void Response::setContentTypeByPath(std::string path) {
-	std::string extension;
-
-	for (std::string::iterator it = path.begin(); it != path.end(); it++) {
-		if (*it == '.')
-			extension.clear();
-		extension += *it;
-	}
-
 	std::map<std::string, std::string> contentTypes;
 	
 	contentTypes[".htm"] = "text/html";
@@ -79,9 +72,10 @@ void Response::setContentTypeByPath(std::string path) {
 	contentTypes[".mp4"] = "video/mp4";
 	contentTypes[".txt"] = "text/plain; charset=UTF-8";
 
+	std::string extension = getFileExtension(path);
 	std::string contentType = contentTypes[extension];
 	if (contentType.empty())
-		logger << WARNING << "Unable to find content type of " << extension << " extension." << ENDL;
+		logger << WARNING << "Unable to find content type of '" << extension << "' extension." << ENDL;
 	else
 		_content_type = contentType;
 }

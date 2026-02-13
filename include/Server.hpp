@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/04 18:30:31 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/12 22:24:46 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/13 16:42:48 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,12 +41,16 @@ class Server {
 		Response getFileResponse(std::string path);
 		Response getCreateFileResponse(Request &request);
 		Response getDeleteFileResponse(Request &request);
+
+		// CGI
+		bool isCGI(std::string path);
 		
+		// Redirection
 		bool isRedirection(std::string uri) const;
 		std::string getRedirection(std::string uri) const;
 		
 		std::string locationResolver(std::string uri) const;
-		bool isAllowedMethod(Method method);
+		bool isAllowedMethod(Method method) const;
 		static std::string getFileListing(DIR *dir, const std::string &currentUri);
 
 	public:

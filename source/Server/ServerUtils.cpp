@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/09 04:28:41 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/11 11:25:39 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/13 16:42:52 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,16 +36,6 @@ std::string Server::getRedirection(std::string uri) const {
 	throw std::runtime_error("Unable to find redirection.");
 }
 
-static void removeDuplicateSlash(std::string &s) {
-	for (std::string::iterator it = s.begin(); it != s.end(); it++) {
-		if (*it == '/' && *(it + 1) == '/')
-		{
-			s.erase(it);
-			it--;
-		}
-	}
-}
-
 std::string Server::locationResolver(std::string uri) const {
 	std::map<std::string, std::string> locationsMap = _config.locations;
 	std::map<std::string, std::string>::const_iterator locations = locationsMap.begin();
@@ -73,7 +63,7 @@ std::string Server::locationResolver(std::string uri) const {
 	return path;
 }
 
-bool Server::isAllowedMethod(Method method) {
+bool Server::isAllowedMethod(Method method) const {
 	std::vector<Method>::const_iterator it = _config.allowed_methods.begin();
 	for (; it != _config.allowed_methods.end(); it++) {
 		if (*it == method)

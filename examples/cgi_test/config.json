@@ -1,0 +1,21 @@
+[
+	{
+		"name": "cgi test",
+		"listen": "0.0.0.0:8080",
+		"locations": [
+			{
+				"uri": "/",
+				"path": "./examples/cgi_test/"
+			}
+		],
+		"document_index": "/test.py",
+		"allowed_methods": ["GET"],
+		"cgi_enabled": true,
+		"cgi_rules": [
+			{
+				"extension": ".py",
+				"path": "/bin/python"
+			}
+		]
+	}
+]

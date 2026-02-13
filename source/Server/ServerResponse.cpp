@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/10 15:23:44 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/13 14:50:37 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/13 16:37:29 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,8 +65,8 @@ Response Server::getResponse(Request &request) {
 	// else path is a file
 	} else {
 		// Check if its a CGI
-		if (false) {
-
+		if (_config.cgi_enabled && this->isCGI(path)) {
+			logger << CRITICAL << request.getUri() << " is a cgi" << ENDL;
 		} else {
 			response = this->getFileResponse(path);
 		}

@@ -12,6 +12,7 @@ SRCS = $(SRC_DIR)main.cpp \
 	$(SRC_DIR)Server/ServerUtils.cpp \
 	$(SRC_DIR)Server/ServerResponse.cpp \
 	$(SRC_DIR)Server/ServerRequest.cpp \
+	$(SRC_DIR)Server/ServerCGI.cpp \
 	$(SRC_DIR)ServerManager.cpp \
 	$(SRC_DIR)Method.cpp \
 	$(SRC_DIR)utils.cpp \
