@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/12 19:55:28 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/13 22:28:53 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/13 23:26:10 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -178,7 +178,7 @@ void Server::receiveFirstSegment(Client &client) {
 		request.pre_response_status_code = RESPONSE_NOT_IMPLEMENTED;
 	else if (request.http_version != "HTTP/1.1")
 		request.pre_response_status_code = RESPONSE_HTTP_VERSION_NOT_SUPPORTED;
-	else if (request.headers.getContentLength() > _config.max_body_size)
+	else if (request.headers.getContentLength() > this->config.max_body_size)
 		request.pre_response_status_code = RESPONSE_CONTENT_TOO_LARGE;
 	else if (!isValidUri(request.uri))
 		request.pre_response_status_code = RESPONSE_BAD_REQUEST;

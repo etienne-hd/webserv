@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/04 18:30:31 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/13 23:15:57 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/13 23:24:57 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,6 @@
 
 class Server {
 	private:
-		const Config _config;
 		int	_socket;
 		std::vector<Client> _clients;
 
@@ -56,9 +55,10 @@ class Server {
 		static std::string getFileListing(DIR *dir, const std::string &currentUri);
 
 	public:
+		const Config config;
+
 		Server(const Config config);
 		~Server(void);
-
 		
 		int initSocket(void);
 		int getSocket(void) { return _socket; }
@@ -66,8 +66,6 @@ class Server {
 		
 		std::vector<Client> &getClients(void) { return _clients; }
 		void closeClient(Client &client);
-
-		const Config getConfig(void) const { return _config; }
 
 		Client acceptClient(void);
 		

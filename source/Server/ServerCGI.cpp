@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 15:43:44 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/13 23:17:10 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/13 23:25:58 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@
 
 bool Server::isCGI(std::string path) {
 	std::string extension = getFileExtension(path);
-	for (std::map<std::string, std::string>::const_iterator it = _config.cgi_rules.begin(); it != _config.cgi_rules.end(); it++) {
+	for (std::map<std::string, std::string>::const_iterator it = this->config.cgi_rules.begin(); it != this->config.cgi_rules.end(); it++) {
 		if (it->first == extension)
 			return (true);
 	}
@@ -36,7 +36,7 @@ bool Server::isCGI(std::string path) {
 
 std::string Server::getCGI(std::string path) {
 	std::string extension = getFileExtension(path);
-	for (std::map<std::string, std::string>::const_iterator it = _config.cgi_rules.begin(); it != _config.cgi_rules.end(); it++) {
+	for (std::map<std::string, std::string>::const_iterator it = this->config.cgi_rules.begin(); it != this->config.cgi_rules.end(); it++) {
 		if (it->first == extension)
 			return (it->second);
 	}

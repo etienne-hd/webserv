@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/07 22:51:27 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/13 23:17:35 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/13 23:28:26 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ void ServerManager::run(void) {
 	logger << DEBUG << "Server(s) socket initialized!" << ENDL;
 	logger << INFO << "Server(s) successfully started! (Press CTRL+C to quit)" << ENDL;
 	for (std::vector<Server>::iterator server = _servers.begin(); server != _servers.end(); server++) {
-		logger << INFO << "'" << server->getConfig().name << "'" " is running on " << "http://" << server->getConfig().listen << ENDL;
+		logger << INFO << "'" << server->config.name << "'" " is running on " << "http://" << server->config.listen << ENDL;
 	}
 	while (isRunning) {
 		read_fds = _master_fds;
@@ -93,7 +93,7 @@ void ServerManager::run(void) {
 						}
 						if (cgi.eof)
 							server->onCGIOutput(*client);
-					} else if (time(__null) > cgi.timeout + server->getConfig().cgi_timeout) {
+					} else if (time(__null) > cgi.timeout + server->config.cgi_timeout) {
 						server->onCGITimeout(*client);
 					}
 					continue;
@@ -147,7 +147,7 @@ void ServerManager::run(void) {
 				}
 				
 				// Keep Alive timeout
-				if (time(__null) > client->client_timeout + server->getConfig().keepalive_timeout) {
+				if (time(__null) > client->client_timeout + server->config.keepalive_timeout) {
 					server->onKeepAliveTimeout(*client);
 					clientToRemove.push_back(*client);
 				}

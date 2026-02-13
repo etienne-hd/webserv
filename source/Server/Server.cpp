@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/07 22:19:14 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/13 22:27:25 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/13 23:25:26 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@
 #include <unistd.h>
 #include <vector>
 
-Server::Server(const Config config): _config(config) {
+Server::Server(const Config config): config(config) {
 	_socket = -1;
 }
 
@@ -38,7 +38,7 @@ int Server::initSocket(void) {
 	
 	int option = 1;
 	setsockopt(_socket, SOL_SOCKET, SO_REUSEADDR, &option, sizeof(option));
-	sockaddr_in socketAddress = getSocketAddress(_config.listen);
+	sockaddr_in socketAddress = getSocketAddress(this->config.listen);
 	if (bind(_socket, (struct sockaddr*)&socketAddress, sizeof(socketAddress)) == -1) {
 		this->closeSocket();
 		throw std::runtime_error("Unable to bind address");
@@ -92,7 +92,7 @@ bool Server::onRequest(Client &client) {
 		sendResponse(client);
 		return (true);
 	}
-	if (request.content.length() > _config.max_body_size) {
+	if (request.content.length() > this->config.max_body_size) {
 		response = this->getErrorResponse(RESPONSE_CONTENT_TOO_LARGE);
 		sendResponse(client);
 		return (true);

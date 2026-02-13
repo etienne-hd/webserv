@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/09 04:28:41 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/13 16:42:52 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/13 23:27:58 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
 #include <unistd.h>
 
 bool Server::isRedirection(std::string uri) const {
-	for (std::map<std::string, std::string>::const_iterator redirection = _config.redirections.begin(); redirection != _config.redirections.end(); ++redirection) {
+	for (std::map<std::string, std::string>::const_iterator redirection = this->config.redirections.begin(); redirection != this->config.redirections.end(); ++redirection) {
 		if (isSamePath(uri, redirection->first))
 			return (1);
 	}
@@ -29,7 +29,7 @@ bool Server::isRedirection(std::string uri) const {
 }
 
 std::string Server::getRedirection(std::string uri) const {
-	for (std::map<std::string, std::string>::const_iterator redirection = _config.redirections.begin(); redirection != _config.redirections.end(); ++redirection) {
+	for (std::map<std::string, std::string>::const_iterator redirection = this->config.redirections.begin(); redirection != this->config.redirections.end(); ++redirection) {
 		if (isSamePath(uri, redirection->first))
 			return (redirection->second);
 	}
@@ -37,14 +37,14 @@ std::string Server::getRedirection(std::string uri) const {
 }
 
 std::string Server::locationResolver(std::string uri) const {
-	std::map<std::string, std::string> locationsMap = _config.locations;
+	std::map<std::string, std::string> locationsMap = this->config.locations;
 	std::map<std::string, std::string>::const_iterator locations = locationsMap.begin();
 	std::string closest;
 
 	logger << DEBUG << "Location Resolver: " << uri << " -> ";
 	removeDuplicateSlash(uri);
 	if (uri == "/")
-		uri = _config.document_index;
+		uri = this->config.document_index;
 
 	while (locations != locationsMap.end()) {
 		if (std::strncmp(uri.c_str(), locations->first.c_str(), locations->first.length()) == 0) {
@@ -64,10 +64,10 @@ std::string Server::locationResolver(std::string uri) const {
 }
 
 bool Server::isAllowedMethod(Method method) const {
-	std::vector<Method>::const_iterator it = _config.allowed_methods.begin();
-	for (; it != _config.allowed_methods.end(); it++) {
+	std::vector<Method>::const_iterator it = this->config.allowed_methods.begin();
+	for (; it != this->config.allowed_methods.end(); it++) {
 		if (*it == method)
 			break;
 	}
-	return (it != _config.allowed_methods.end());
+	return (it != this->config.allowed_methods.end());
 }

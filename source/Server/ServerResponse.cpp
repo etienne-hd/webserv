@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/10 15:23:44 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/13 22:35:26 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/13 23:27:21 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ Response Server::getResponse(Client &client) {
 	std::string uri = request.uri;
 
 	if (this->isRedirection(uri)) {
-		std::map<std::string, std::string> redirections = this->_config.redirections;
+		std::map<std::string, std::string> redirections = this->config.redirections;
 		response.status_code = RESPONSE_MOVED_PERMANENTLY;
 		response.headers["Location"] = this->getRedirection(uri);
 		return (response);
@@ -54,20 +54,20 @@ Response Server::getResponse(Client &client) {
 	if (dir) {
 		logger << DEBUG << path << " is a directory" << ENDL;
 		// if directory listing is enabled
-		if (_config.directory_listing_enabled) {
+		if (this->config.directory_listing_enabled) {
 			std::string content = getFileListing(dir, request.uri);
 			response.content_type = "text/html";
 			response.content = content;
 		// else show file on directory
 		} else {
-			path = this->locationResolver(_config.file_on_directory);
+			path = this->locationResolver(this->config.file_on_directory);
 			response = this->getFileResponse(path);
 		}
 		closedir(dir);
 	// else path is a file
 	} else {
 		// Check if its a CGI
-		if (_config.cgi_enabled && this->isCGI(path)) {
+		if (this->config.cgi_enabled && this->isCGI(path)) {
 			response = this->execCGI(client, path);
 		} else {
 			response = this->getFileResponse(path);
@@ -91,7 +91,7 @@ Response Server::getErrorResponse(int status_code) {
 	Response response;
 
 	response.status_code = status_code;
-	std::map<int, std::string> error_pages = _config.error_pages;
+	std::map<int, std::string> error_pages = this->config.error_pages;
 	response.content_type = "text/html";
 	if (error_pages.find(status_code) == error_pages.end())
 		response.content = getDefaultErrorContent(status_code);
@@ -135,8 +135,8 @@ Response Server::getFileResponse(const std::string path) {
 Response Server::getCreateFileResponse(Request &request) {
 	Response response;
 	
-	if (_config.file_upload_enabled) {
-		std::string path = locationResolver(_config.file_upload_directory) + request.uri;
+	if (this->config.file_upload_enabled) {
+		std::string path = locationResolver(this->config.file_upload_directory) + request.uri;
 		logger << DEBUG << "Trying to create file at " << path << ENDL;
 		int fd = open(path.c_str(), O_WRONLY | O_CREAT, 0644);
 		if (fd != -1) {
@@ -156,8 +156,8 @@ Response Server::getCreateFileResponse(Request &request) {
 Response Server::getDeleteFileResponse(Request &request) {
 	Response response;
 
-	if (_config.file_upload_enabled) {
-		std::string path = locationResolver(_config.file_upload_directory) + request.uri;
+	if (this->config.file_upload_enabled) {
+		std::string path = locationResolver(this->config.file_upload_directory) + request.uri;
 		logger << DEBUG << "Trying to remove file at " << path << ENDL;
 		if (access(path.c_str(), F_OK) == 0) {
 			if (std::remove(path.c_str()) != -1) {
