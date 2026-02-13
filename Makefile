@@ -19,7 +19,8 @@ SRCS = $(SRC_DIR)main.cpp \
 	$(SRC_DIR)Request.cpp \
 	$(SRC_DIR)Response.cpp \
 	$(SRC_DIR)Client.cpp \
-	$(SRC_DIR)Headers.cpp
+	$(SRC_DIR)Headers.cpp \
+	$(SRC_DIR)CGI.cpp
 
 OBJ_DIR = .build/
 OBJS = $(SRCS:$(SRC_DIR)%.cpp=$(OBJ_DIR)%.o)

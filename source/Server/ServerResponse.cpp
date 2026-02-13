@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/10 15:23:44 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/13 16:37:29 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/13 22:35:26 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,25 +24,27 @@
 #include <dirent.h>
 #include <fcntl.h>
 
-void Server::sendResponse(Client &client, Response &response) {
-	logger << INFO << client << " (" << client.getTotalRequest() << ")" << " -> " << response.getStatusCode() << " " << client.getRequest().getRawMethod() << " " << client.getRequest().getRawUri() << ENDL;
-	client.resetRequest();
+void Server::sendResponse(Client &client) {
+	Response &response = client.response;
 
+	logger << INFO << client << " (" << client.total_request << ")" << " -> " << response.status_code << " " << client.request.raw_method << " " << client.request.raw_uri << ENDL;
 	std::string rawResponse = response.build();
-	if (send(client.getSocket(), rawResponse.c_str(), rawResponse.length(), 0) == -1) {
+	client.resetIO();
+	if (send(client.socket, rawResponse.c_str(), rawResponse.length(), 0) == -1) {
 		throw std::runtime_error("Unable to send response");
 	}
 }
 
-Response Server::getResponse(Request &request) {
+Response Server::getResponse(Client &client) {
 	Response response;
+	Request request = client.request;
 
-	std::string uri = request.getUri();
+	std::string uri = request.uri;
 
 	if (this->isRedirection(uri)) {
 		std::map<std::string, std::string> redirections = this->_config.redirections;
-		response.getStatusCode() = RESPONSE_MOVED_PERMANENTLY;
-		response.getHeaders()["Location"] = this->getRedirection(uri);
+		response.status_code = RESPONSE_MOVED_PERMANENTLY;
+		response.headers["Location"] = this->getRedirection(uri);
 		return (response);
 	}
 	std::string path = locationResolver(uri);
@@ -53,9 +55,9 @@ Response Server::getResponse(Request &request) {
 		logger << DEBUG << path << " is a directory" << ENDL;
 		// if directory listing is enabled
 		if (_config.directory_listing_enabled) {
-			std::string content = getFileListing(dir, request.getUri());
-			response.getContentType() = "text/html";
-			response.getContent() = content;
+			std::string content = getFileListing(dir, request.uri);
+			response.content_type = "text/html";
+			response.content = content;
 		// else show file on directory
 		} else {
 			path = this->locationResolver(_config.file_on_directory);
@@ -66,7 +68,7 @@ Response Server::getResponse(Request &request) {
 	} else {
 		// Check if its a CGI
 		if (_config.cgi_enabled && this->isCGI(path)) {
-			logger << CRITICAL << request.getUri() << " is a cgi" << ENDL;
+			response = this->execCGI(client, path);
 		} else {
 			response = this->getFileResponse(path);
 		}
@@ -88,11 +90,11 @@ static std::string getDefaultErrorContent(int status_code) {
 Response Server::getErrorResponse(int status_code) {
 	Response response;
 
-	response.getStatusCode() = status_code;
+	response.status_code = status_code;
 	std::map<int, std::string> error_pages = _config.error_pages;
-	response.getContentType() = "text/html";
+	response.content_type = "text/html";
 	if (error_pages.find(status_code) == error_pages.end())
-		response.getContent() = getDefaultErrorContent(status_code);
+		response.content = getDefaultErrorContent(status_code);
 	else {
 		std::string path = this->locationResolver(error_pages[status_code]);
 		response = this->getFileResponse(path);
@@ -121,8 +123,8 @@ Response Server::getFileResponse(const std::string path) {
 			logger << ERROR << "Read error: " << std::strerror(errno) << ENDL;
 			response = this->getErrorResponse(RESPONSE_INTERNAL_SERVER_ERROR);
 		} else {
-			response.getStatusCode() = RESPONSE_OK;
-			response.getContent() = content;
+			response.status_code = RESPONSE_OK;
+			response.content = content;
 			response.setContentTypeByPath(path);
 		}
 		close(fd);
@@ -134,12 +136,12 @@ Response Server::getCreateFileResponse(Request &request) {
 	Response response;
 	
 	if (_config.file_upload_enabled) {
-		std::string path = locationResolver(_config.file_upload_directory) + request.getUri();
+		std::string path = locationResolver(_config.file_upload_directory) + request.uri;
 		logger << DEBUG << "Trying to create file at " << path << ENDL;
 		int fd = open(path.c_str(), O_WRONLY | O_CREAT, 0644);
 		if (fd != -1) {
-			write(fd, request.getContent().c_str(), request.getContent().length());
-			response.getStatusCode() = RESPONSE_CREATED;
+			write(fd, request.content.c_str(), request.content.length());
+			response.status_code = RESPONSE_CREATED;
 			close(fd);
 		} else {
 			response = this->getErrorResponse(RESPONSE_INTERNAL_SERVER_ERROR);
@@ -155,11 +157,11 @@ Response Server::getDeleteFileResponse(Request &request) {
 	Response response;
 
 	if (_config.file_upload_enabled) {
-		std::string path = locationResolver(_config.file_upload_directory) + request.getUri();
+		std::string path = locationResolver(_config.file_upload_directory) + request.uri;
 		logger << DEBUG << "Trying to remove file at " << path << ENDL;
 		if (access(path.c_str(), F_OK) == 0) {
 			if (std::remove(path.c_str()) != -1) {
-				response.getStatusCode() = RESPONSE_OK;
+				response.status_code = RESPONSE_OK;
 			} else {
 				logger << DEBUG << "Unable to remove file at " << path << " reason: " << std::strerror(errno) << ENDL;
 				response = this->getErrorResponse(RESPONSE_INTERNAL_SERVER_ERROR);

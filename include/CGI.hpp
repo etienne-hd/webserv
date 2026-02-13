@@ -1,21 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Request.cpp                                        :+:      :+:    :+:   */
+/*   CGI.hpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/09 02:45:56 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/13 22:23:48 by ehode            ###   ########.fr       */
+/*   Created: 2026/02/13 18:53:27 by ehode             #+#    #+#             */
+/*   Updated: 2026/02/13 21:28:24 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Request.hpp"
+#ifndef CGI_HPP
+# define CGI_HPP
 
-#include <sys/socket.h>
+# include <string>
 
-Request::Request(void) {
-	this->segment_count = 0;
-	this->segment_timeout = -1;
-	this->pre_response_status_code = -1;
-}
+class CGI {
+	public:
+		bool		is_running;
+		int			fd;
+		int			pid;
+		std::string	output;
+		long		start_at;
+		bool		eof;
+
+		CGI(void);
+};
+
+#endif

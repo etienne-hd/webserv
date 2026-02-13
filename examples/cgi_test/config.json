@@ -14,7 +14,7 @@
 		"cgi_rules": [
 			{
 				"extension": ".py",
-				"path": "/bin/python"
+				"path": "/bin/python3"
 			}
 		]
 	}

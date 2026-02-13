@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/04 18:30:31 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/13 16:42:48 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/13 21:07:20 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,8 @@ class Server {
 		std::string getRawRequest(int clientSocket) const;
 		
 		// Response
-		void sendResponse(Client &client, Response &response);
-		Response getResponse(Request &request);
+		void sendResponse(Client &client);
+		Response getResponse(Client &client);
 		Response getErrorResponse(int status_code);
 		Response getFileResponse(std::string path);
 		Response getCreateFileResponse(Request &request);
@@ -44,7 +44,9 @@ class Server {
 
 		// CGI
 		bool isCGI(std::string path);
-		
+		Response execCGI(Client &client, std::string path);
+		std::string getCGI(std::string path);
+
 		// Redirection
 		bool isRedirection(std::string uri) const;
 		std::string getRedirection(std::string uri) const;
@@ -67,17 +69,19 @@ class Server {
 
 		const Config getConfig(void) const { return _config; }
 
-		// event
 		Client acceptClient(void);
 		
 		std::string receiveSegment(Client &client);
 		void receiveFirstSegment(Client &client);
 		void receiveOtherSegment(Client &client);
 		bool isEndOfSegment(Client &client);
+		void onSegmentTimeout(Client &client);
+
+		bool readCGI(Client &client);
+		void onCGIOutput(Client &client);
 		
 		bool onRequest(Client &client);
-		
-		void onSegmentTimeout(Client &client);
+
 		void onKeepAliveTimeout(Client &client);
 
 		// exception

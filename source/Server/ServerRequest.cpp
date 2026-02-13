@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/12 19:55:28 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/13 16:48:30 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/13 22:28:53 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,85 +21,73 @@
 #include <cstring>
 
 std::string Server::receiveSegment(Client &client) {
-	Request &request = client.getRequest();
+	Request &request = client.request;
 	// Reset Timeout
-	request.getSegmentTimeout() = time(__null);
-	client.getClientTimeout() = time(__null);
+	request.segment_timeout = time(__null);
+	client.client_timeout = time(__null);
 	
 	char buffer[262144];
 	
-	ssize_t byteReads = recv(client.getSocket(), buffer, sizeof(buffer), 0);
+	ssize_t byteReads = recv(client.socket, buffer, sizeof(buffer), 0);
 	if (byteReads == 0)
 		throw Server::ClientDisconnected();
 	else if (byteReads == -1)
 		throw std::runtime_error(std::strerror(errno));
 	
 	std::string rawSegment = std::string(buffer, byteReads);
-	request.getSegmentCount()++;
-	logger << DEBUG << client << " > Received segment #" << request.getSegmentCount() << " of " << byteReads << " byte(s)" << ENDL;
+	request.segment_count++;
+	logger << DEBUG << client << " > Received segment #" << request.segment_count << " of " << byteReads << " byte(s)" << ENDL;
 	return (rawSegment);
 }
 
 // Check if the server need to read more segment from the client.
 // return true when all segment is read
 bool Server::isEndOfSegment(Client &client) {
-	Request &request = client.getRequest();
+	Request &request = client.request;
 
-	if (request.getPreResponseStatusCode() != -1)
+	if (request.pre_response_status_code != -1)
 		return (true);
 
-	unsigned long contentLength = request.getHeaders().getContentLength();
-	return (request.getContent().length() >= contentLength);
-}
-
-static bool expectedToken(std::string &s, std::string::iterator &it, std::string expectedToken) {
-	int distance = std::distance(s.begin(), it);
-	if (std::strncmp(std::string(s.begin() + distance, s.end()).c_str(), expectedToken.c_str(), expectedToken.length()) == 0)
-	{
-		it += expectedToken.length();
-		return (1);
-	}
-	return (0);
+	unsigned long contentLength = request.headers.getContentLength();
+	return (request.content.length() >= contentLength);
 }
 
 static void initParameters(Request &request) {
-	size_t pos = request.getRawUri().find("?");
+	size_t pos = request.raw_uri.find("?");
 	if (pos == std::string::npos)
 		return; // No parameters in request
-	std::string raw_parameters = std::string(request.getRawUri(), pos + 1);
-	request.getRawParameters() = raw_parameters;
+	request.raw_parameters = std::string(request.raw_uri, pos + 1);
 
-	std::string::iterator it = raw_parameters.begin();
-	while (it != raw_parameters.end()) {
+	std::string::iterator it = request.raw_parameters.begin();
+	while (it != request.raw_parameters.end()) {
 		std::string key;
-		while (it != raw_parameters.end() && !expectedToken(raw_parameters, it, "=")) {
+		while (it != request.raw_parameters.end() && !expectedToken(request.raw_parameters, it, "=")) {
 			key += *it;
 			it++;
 		}
 
 		std::string value;
-		while (it != raw_parameters.end() && !expectedToken(raw_parameters, it, "&")) {
+		while (it != request.raw_parameters.end() && !expectedToken(request.raw_parameters, it, "&")) {
 			value += *it;
 			it++;
 		}
 
-		request.getParameters()[key] = value;
+		request.parameters[key] = value;
 	}
 }
 
 static void initUri(Request &request) {
-	std::string &uri = request.getUri();
-	std::string &rawUri = request.getRawUri();
+	std::string &uri = request.uri;
+	std::string &rawUri = request.raw_uri;
 	size_t pos = rawUri.find("?");
 	if (pos == std::string::npos) {
-		uri = request.getRawUri();
+		uri = request.raw_uri;
 	} else {
-		uri = std::string(request.getRawUri(), 0, pos);
+		uri = std::string(request.raw_uri, 0, pos);
 	}
 	removeDuplicateSlash(uri);
 	if (uri.length() > 1 && *(uri.end() - 1) == '/')
 		uri.erase(uri.end() - 1);
-	logger << CRITICAL << uri << ENDL;
 }
 
 static void parseRequest(Request &request, std::string rawSegment) {
@@ -108,20 +96,20 @@ static void parseRequest(Request &request, std::string rawSegment) {
 	std::string::iterator it = rawSegment.begin();
 	while (it != rawSegment.end()) {
 		if (currentTokenType == METHOD && expectedToken(rawSegment, it, " ")) {
-			request.getRawMethod() = currentToken;
+			request.raw_method = currentToken;
 			try {
-				request.getMethod() = getMethodFromString(currentToken);
+				request.method = getMethodFromString(currentToken);
 			} catch (std::exception &e) {
 				throw Server::BadRequest();
 			}
 			currentTokenType = URI;
 			currentToken.clear();
 		} else if (currentTokenType == URI && expectedToken(rawSegment, it, " ")) {
-			request.getRawUri() = currentToken;
+			request.raw_uri = currentToken;
 			currentTokenType = HTTP_VERSION;
 			currentToken.clear();
 		} else if (currentTokenType == HTTP_VERSION && expectedToken(rawSegment, it, "\r\n")) {
-			request.getHTTPVersion() = currentToken;
+			request.http_version = currentToken;
 			currentTokenType = HEADERS;
 			currentToken.clear();
 		} else if (currentTokenType == HEADERS) {
@@ -139,7 +127,7 @@ static void parseRequest(Request &request, std::string rawSegment) {
 					value += *it;
 					it++;
 				}
-				request.getHeaders()[key] = value;
+				request.headers[key] = value;
 			}
 			currentTokenType = CONTENT;
 		} else {
@@ -154,7 +142,7 @@ static void parseRequest(Request &request, std::string rawSegment) {
 	)
 		throw Server::BadRequest();
 
-	request.getContent() = currentToken;
+	request.content = currentToken;
 	initParameters(request);
 	initUri(request);
 }
@@ -174,31 +162,31 @@ static bool isValidUri(std::string uri) {
 
 // Receive the first segment, it check the headers and verify that the request is correctly formatted
 void Server::receiveFirstSegment(Client &client) {
-	Request &request = client.getRequest();
-	client.getTotalRequest()++;
+	Request &request = client.request;
+	client.total_request++;
 	
 	std::string rawSegment = this->receiveSegment(client);
 	
 	try {
 		parseRequest(request, rawSegment);
 	} catch (std::exception &e) {
-		request.getPreResponseStatusCode() = RESPONSE_BAD_REQUEST;
+		request.pre_response_status_code = RESPONSE_BAD_REQUEST;
 		return ;
 	}
 
-	if (!this->isAllowedMethod(request.getMethod()))
-		request.getPreResponseStatusCode() = RESPONSE_NOT_IMPLEMENTED;
-	else if (request.getHTTPVersion() != "HTTP/1.1")
-		request.getPreResponseStatusCode() = RESPONSE_HTTP_VERSION_NOT_SUPPORTED;
-	else if (request.getHeaders().getContentLength() > _config.max_body_size)
-		request.getPreResponseStatusCode() = RESPONSE_CONTENT_TOO_LARGE;
-	else if (!isValidUri(request.getUri()))
-		request.getPreResponseStatusCode() = RESPONSE_BAD_REQUEST;
+	if (!this->isAllowedMethod(request.method))
+		request.pre_response_status_code = RESPONSE_NOT_IMPLEMENTED;
+	else if (request.http_version != "HTTP/1.1")
+		request.pre_response_status_code = RESPONSE_HTTP_VERSION_NOT_SUPPORTED;
+	else if (request.headers.getContentLength() > _config.max_body_size)
+		request.pre_response_status_code = RESPONSE_CONTENT_TOO_LARGE;
+	else if (!isValidUri(request.uri))
+		request.pre_response_status_code = RESPONSE_BAD_REQUEST;
 }
 
 void Server::receiveOtherSegment(Client &client) {
-	Request &request = client.getRequest();
+	Request &request = client.request;
 	std::string rawSegment = this->receiveSegment(client);
 
-	request.getContent() += rawSegment;
+	request.content += rawSegment;
 }

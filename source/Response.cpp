@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/09 20:17:45 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/13 15:52:44 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/13 22:38:54 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,8 @@
 #include <string>
 
 Response::Response(void) {
-	_status_code = 200;
-	_content_type = "text/plain";
+	this->status_code = 200;
+	this->content_type = "text/plain";
 }
 
 std::string Response::getStatusCodeText(int status_code) {
@@ -77,30 +77,30 @@ void Response::setContentTypeByPath(std::string path) {
 	if (contentType.empty())
 		logger << WARNING << "Unable to find content type of '" << extension << "' extension." << ENDL;
 	else
-		_content_type = contentType;
+		this->content_type = contentType;
 }
 
 std::string Response::build(void) {
 	std::stringstream s;
 
 	s << "HTTP/1.1" << " ";
-	s << _status_code << " ";
-	s << getStatusCodeText(_status_code) << "\r\n";
+	s << this->status_code << " ";
+	s << getStatusCodeText(this->status_code) << "\r\n";
 
 	s << "Server: " << "webserv" << "\r\n";
-	s << "Content-Length: " << _content.length() << "\r\n";
-	s << "Content-Type: " << _content_type << "\r\n";
+	s << "Content-Length: " << this->content.length() << "\r\n";
+	s << "Content-Type: " << this->content_type << "\r\n";
 
-	if (!_cookies.empty()) {
-		for (Cookies::iterator cookie = _cookies.begin(); cookie != _cookies.end(); cookie++) {
+	if (!this->cookies.empty()) {
+		for (Cookies::iterator cookie = this->cookies.begin(); cookie != this->cookies.end(); cookie++) {
 			s << "Set-Cookie: " << cookie->first << "=" << cookie->second << "\r\n";
 		}
 	}
-	for (Headers::iterator header = _headers.begin(); header != _headers.end(); header++) {
+	for (Headers::iterator header = this->headers.begin(); header != this->headers.end(); header++) {
 		s << header->first << ": " << header->second << "\r\n";
 	}
 	
 	s << "\r\n";
-	s << _content;
+	s << this->content;
 	return (s.str());
 }

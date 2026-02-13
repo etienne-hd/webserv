@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/08 19:58:41 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/13 16:42:04 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/13 21:25:26 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 #include <cctype>
 #include <cstdlib>
+#include <cstring>
 #include <dirent.h>
 #include <fstream>
 #include <netinet/in.h>
@@ -156,4 +157,14 @@ void removeDuplicateSlash(std::string &s) {
 			it--;
 		}
 	}
+}
+
+bool expectedToken(std::string &s, std::string::iterator &it, std::string expectedToken) {
+	int distance = std::distance(s.begin(), it);
+	if (std::strncmp(std::string(s.begin() + distance, s.end()).c_str(), expectedToken.c_str(), expectedToken.length()) == 0)
+	{
+		it += expectedToken.length();
+		return (1);
+	}
+	return (0);
 }

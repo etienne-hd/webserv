@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/07 22:19:14 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/12 22:46:54 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/13 22:27:25 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,41 +76,40 @@ Client Server::acceptClient(void) {
 // onRequest is called when an incomming full request is ready
 // It return a boolean, if true the socket must be closed
 bool Server::onRequest(Client &client) {
-	Request &request = client.getRequest();
-	
-	Response response;
-	int preResponseStatusCode = request.getPreResponseStatusCode();
-	if (preResponseStatusCode != -1) {
-		response = this->getErrorResponse(preResponseStatusCode);
-		sendResponse(client, response);
+	Request &request = client.request;
+	Response &response = client.response;
+	CGI &cgi = response.cgi;
+
+	if (request.pre_response_status_code != -1) {
+		response = this->getErrorResponse(request.pre_response_status_code);
+		sendResponse(client);
 		return (true);
 	}
 
 	// These checks can only be performed once all segments are connected.
-	if (request.getContent().length() != request.getHeaders().getContentLength()) {
+	if (request.content.length() != request.headers.getContentLength()) {
 		response = this->getErrorResponse(RESPONSE_BAD_REQUEST);
-		sendResponse(client, response);
+		sendResponse(client);
 		return (true);
 	}
-	if (request.getContent().length() > _config.max_body_size) {
+	if (request.content.length() > _config.max_body_size) {
 		response = this->getErrorResponse(RESPONSE_CONTENT_TOO_LARGE);
-		sendResponse(client, response);
+		sendResponse(client);
 		return (true);
 	}
 	
-	if (request.getMethod() == GET)
-		response = this->getResponse(request); // Get file / folder
-	else if (request.getMethod() == POST)
+	if (request.method == GET)
+		response = this->getResponse(client); // Get file / folder
+	else if (request.method == POST)
 		response = this->getCreateFileResponse(request);
-	else if (request.getMethod() == DELETE)
+	else if (request.method == DELETE)
 		response = this->getDeleteFileResponse(request);
 	else
 		response = this->getErrorResponse(RESPONSE_BAD_REQUEST);
 
-	std::string connection = request.getHeaders()["connection"];
-	sendResponse(client, response);
-	
-	if (connection == "keep-alive")
+	if (cgi.is_running == false)
+		sendResponse(client);
+	if (request.headers["connection"] == "keep-alive" || cgi.is_running == true)
 		return (false);
 	else
 		return (true);
@@ -120,7 +119,7 @@ void Server::onSegmentTimeout(Client &client) {
 	Response response;
 
 	response = getErrorResponse(408);
-	sendResponse(client, response);
+	sendResponse(client);
 	logger << INFO << client << " -> Segment timed out, connection closed." << ENDL; 
 }
 
@@ -129,7 +128,7 @@ void Server::onKeepAliveTimeout(Client &client) {
 }
 
 void Server::closeClient(Client &client) {
-	close(client.getSocket());
+	close(client.socket);
 	std::vector<Client>::iterator currentClient = _clients.begin();
 	for (; currentClient != _clients.end(); currentClient++) {
 		if (client == *currentClient) {

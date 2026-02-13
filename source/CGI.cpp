@@ -1,21 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Request.cpp                                        :+:      :+:    :+:   */
+/*   CGI.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/02/09 02:45:56 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/13 22:23:48 by ehode            ###   ########.fr       */
+/*   Created: 2026/02/13 19:00:22 by ehode             #+#    #+#             */
+/*   Updated: 2026/02/13 22:46:41 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Request.hpp"
+#include "CGI.hpp"
 
-#include <sys/socket.h>
-
-Request::Request(void) {
-	this->segment_count = 0;
-	this->segment_timeout = -1;
-	this->pre_response_status_code = -1;
+CGI::CGI(void) {
+	this->is_running = 0;
+	this->eof = 0;
 }

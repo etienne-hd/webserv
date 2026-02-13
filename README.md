@@ -17,6 +17,7 @@ a static HTTP server
 - [x] Request init parameters map
 - [ ] Show port on << client overload
 - [x] Check uri (.., / at begin)
+- [ ] Close read pipe / kill (CGI) on ctrl+c
 
 ## Known issue
 - [ ] Leak when socket initialization fail
@@ -72,3 +73,6 @@ a static HTTP server
 	}
 ]
 ```
+
+## CGI
+- https://www.rfc-editor.org/rfc/rfc3875.html

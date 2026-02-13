@@ -6,11 +6,12 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/07 22:51:27 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/12 22:45:00 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/13 22:29:41 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ServerManager.hpp"
+#include "CGI.hpp"
 #include "Logger.hpp"
 #include "Request.hpp"
 #include "Server.hpp"
@@ -38,14 +39,14 @@ void ServerManager::run(void) {
 	signal(SIGINT, signalHandler);
 	logger << INFO << "Starting server(s)..." << ENDL;
 
-	fd_set read_sockets, write_sockets;
-	FD_ZERO(&_master_socket);
+	fd_set read_fds, write_fds;
+	FD_ZERO(&_master_fds);
 
 	// Initialize Socket
 	logger << DEBUG << "Initializing servers socket..." << ENDL;
 	for (std::vector<Server>::iterator server = _servers.begin(); server != _servers.end(); server++) {
 		int serverSocket = server->initSocket();
-		FD_SET(serverSocket, &_master_socket);
+		FD_SET(serverSocket, &_master_fds);
 	}
 	logger << DEBUG << "Server(s) socket initialized!" << ENDL;
 	logger << INFO << "Server(s) successfully started! (Press CTRL+C to quit)" << ENDL;
@@ -53,9 +54,9 @@ void ServerManager::run(void) {
 		logger << INFO << "'" << server->getConfig().name << "'" " is running on " << "http://" << server->getConfig().listen << ENDL;
 	}
 	while (isRunning) {
-		read_sockets = _master_socket;
-		write_sockets = _master_socket;
-		if (select(FD_SETSIZE, &read_sockets, &write_sockets, __null, __null) == -1) {
+		read_fds = _master_fds;
+		write_fds = _master_fds;
+		if (select(FD_SETSIZE, &read_fds, &write_fds, __null, __null) == -1) {
 			if (isRunning)
 				logger << ERROR << "Select failed" << ENDL;
 			break;
@@ -64,11 +65,11 @@ void ServerManager::run(void) {
 			int serverSocket = server->getSocket();
 
 			// server socket
-			if (FD_ISSET(serverSocket, &read_sockets)) {
+			if (FD_ISSET(serverSocket, &read_fds)) {
 				// NEW CONNECTION
 				try {
 					Client client = server->acceptClient();
-					FD_SET(client.getSocket(), &_master_socket);	
+					FD_SET(client.socket, &_master_fds);	
 					logger << DEBUG << client << " > New client" << ENDL;
 				} catch (std::exception &e) {
 					logger << ERROR << e.what() << ENDL;
@@ -80,16 +81,32 @@ void ServerManager::run(void) {
 
 			// clients socket
 			for (std::vector<Client>::iterator client = clientSockets.begin(); client != clientSockets.end(); ++client) {
-				Request &request = client->getRequest();
+				Request &request = client->request;
+				CGI &cgi = client->response.cgi;
 
-				// Read segments
+				if (cgi.is_running) {
+					if (FD_ISSET(cgi.fd, &read_fds)) {
+						int cgiFd = cgi.fd; // tmp variable of the read pipe (if read failed, request is reset including fd)
+						if (server->readCGI(*client)) {
+							FD_CLR(cgiFd, &_master_fds);
+							close(cgiFd);
+						}
+						if (cgi.eof)
+							server->onCGIOutput(*client);
+					} else {
+						// check timeout
+					}
+					continue;
+				}
+
+				// Read segments, if pre_response_status_code is set don't read another segment
 				if (
-					FD_ISSET(client->getSocket(), &read_sockets) &&
-					request.getPreResponseStatusCode() == -1
+					FD_ISSET(client->socket, &read_fds) &&
+					request.pre_response_status_code == -1
 				){
 					try {
 						// First Segment (check http request syntax)
-						if (request.getSegmentCount() == 0)
+						if (request.segment_count == 0)
 							server->receiveFirstSegment(*client);
 						// Other (complete the content)
 						else
@@ -104,29 +121,33 @@ void ServerManager::run(void) {
 				// we can write into socket &&
 				// the request is completely read
 				if (
-					request.getSegmentCount() > 0 &&
-					FD_ISSET(client->getSocket(), &write_sockets) &&
+					request.segment_count > 0 &&
+					FD_ISSET(client->socket, &write_fds) &&
 					server->isEndOfSegment(*client)
 				) {
 					if (server->onRequest(*client))
 						clientToRemove.push_back(*client);
+					// If CGI is running add read pipe to master fd
+					if (cgi.is_running) {
+						FD_SET(cgi.fd, &_master_fds);
+					}
 				}
 				
 				// Check segment timeout
 				if (
-					request.getSegmentTimeout() != -1 && 
-					time(__null) > request.getSegmentTimeout() + 5
+					request.segment_timeout != -1 && 
+					time(__null) > request.segment_timeout + 5
 				) {
 					// If we can write, send a 408 Request Timeout
 					// Close client connection
-					if (FD_ISSET(client->getSocket(), &write_sockets))
+					if (FD_ISSET(client->socket, &write_fds))
 						server->onSegmentTimeout(*client);
 					clientToRemove.push_back(*client);
 					continue;
 				}
 				
 				// Keep Alive timeout
-				if (time(__null) > client->getClientTimeout() + server->getConfig().keepalive_timeout) {
+				if (time(__null) > client->client_timeout + server->getConfig().keepalive_timeout) {
 					server->onKeepAliveTimeout(*client);
 					clientToRemove.push_back(*client);
 				}
@@ -135,7 +156,7 @@ void ServerManager::run(void) {
 			// clients to remove
 			for (std::vector<Client>::iterator client = clientToRemove.begin(); client != clientToRemove.end(); ++client) {
 				server->closeClient(*client);
-				FD_CLR(client->getSocket(), &_master_socket);
+				FD_CLR(client->socket, &_master_fds);
 			}
 		}
 	}
