@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/12 19:55:28 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/12 22:13:41 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/13 15:41:44 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -153,6 +153,19 @@ static void parseRequest(Request &request, std::string rawSegment) {
 	initUri(request);
 }
 
+static bool isValidUri(std::string uri) {
+	if (uri[0] != '/')
+		return (false);
+
+	std::stringstream ss(uri);
+	std::string part;
+	while (getline(ss, part, '/')) {
+		if (part == "..")
+			return (false);
+	}
+	return (true);
+}
+
 // Receive the first segment, it check the headers and verify that the request is correctly formatted
 void Server::receiveFirstSegment(Client &client) {
 	Request &request = client.getRequest();
@@ -173,7 +186,7 @@ void Server::receiveFirstSegment(Client &client) {
 		request.getPreResponseStatusCode() = RESPONSE_HTTP_VERSION_NOT_SUPPORTED;
 	else if (request.getHeaders().getContentLength() > _config.max_body_size)
 		request.getPreResponseStatusCode() = RESPONSE_CONTENT_TOO_LARGE;
-	else if (request.getUri()[0] != '/')
+	else if (!isValidUri(request.getUri()))
 		request.getPreResponseStatusCode() = RESPONSE_BAD_REQUEST;
 }
 
