@@ -1,0 +1,21 @@
+[
+	{
+		"name": "cgi current timestamp",
+		"listen": "0.0.0.0:8080",
+		"locations": [
+			{
+				"uri": "/",
+				"path": "./examples/cgi_current_timestamp/"
+			}
+		],
+		"document_index": "/current_timestamp.py",
+		"allowed_methods": ["GET"],
+		"cgi_enabled": true,
+		"cgi_rules": [
+			{
+				"extension": ".py",
+				"path": "/bin/python3"
+			}
+		]
+	}
+]
