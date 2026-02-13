@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 15:43:44 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/13 23:25:58 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/14 00:15:40 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 #include "utils.hpp"
 
 #include <cerrno>
+#include <signal.h>
 #include <cstdlib>
 #include <cstring>
 #include <ctime>
@@ -166,8 +167,23 @@ void Server::onCGIOutput(Client &client) {
 }
 
 void Server::onCGITimeout(Client &client) {
-	// Kill process & close pipe
+	this->stopCGI(client);
 	
+	logger << WARNING << client << " > CGI timed out" << ENDL;
 	client.response = this->getErrorResponse(504);
 	this->sendResponse(client);
+}
+
+void Server::stopCGI(Client &client) {
+	CGI &cgi = client.response.cgi;
+
+	if (cgi.fd != -1) {
+		close(cgi.fd);
+		cgi.fd = -1;
+	}
+	if (kill(cgi.pid, SIGKILL) == -1) {
+		logger << CRITICAL << "kill failed: " << std::strerror(errno) << ENDL;
+	} else {
+		logger << DEBUG << client << " > CGI successfully stopped!" << ENDL;
+	}
 }

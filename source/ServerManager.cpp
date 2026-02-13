@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/07 22:51:27 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/13 23:45:58 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/14 00:08:07 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include "Request.hpp"
 #include "Server.hpp"
 
+#include <cstring>
 #include <exception>
 #include <sys/select.h>
 #include <vector>
@@ -58,7 +59,7 @@ void ServerManager::run(void) {
 		write_fds = _master_fds;
 		if (select(FD_SETSIZE, &read_fds, &write_fds, __null, __null) == -1) {
 			if (isRunning)
-				logger << ERROR << "Select failed" << ENDL;
+				logger << CRITICAL << "select failed: " << std::strerror(errno) << ENDL;
 			break;
 		}
 		for (std::vector<Server>::iterator server = _servers.begin(); server != _servers.end(); server++) {
@@ -85,16 +86,17 @@ void ServerManager::run(void) {
 				CGI &cgi = client->response.cgi;
 
 				if (cgi.is_running) {
+					int cgiFd = cgi.fd; // tmp variable of the read pipe (if read failed, request is reset including fd)
 					if (FD_ISSET(cgi.fd, &read_fds)) {
-						int cgiFd = cgi.fd; // tmp variable of the read pipe (if read failed, request is reset including fd)
 						if (server->readCGI(*client)) {
+							server->stopCGI(*client);
 							FD_CLR(cgiFd, &_master_fds);
-							close(cgiFd);
 						}
 						if (cgi.eof)
 							server->onCGIOutput(*client);
 					} else if (time(__null) >= cgi.timeout + server->config.cgi_timeout) {
 						server->onCGITimeout(*client);
+						FD_CLR(cgiFd, &_master_fds);
 					}
 					continue;
 				}
@@ -155,6 +157,8 @@ void ServerManager::run(void) {
 
 			// clients to remove
 			for (std::vector<Client>::iterator client = clientToRemove.begin(); client != clientToRemove.end(); ++client) {
+				if (client->response.cgi.is_running)
+					server->stopCGI(*client);
 				server->closeClient(*client);
 				FD_CLR(client->socket, &_master_fds);
 			}
@@ -169,6 +173,8 @@ void ServerManager::closeServers(void) {
 	for (std::vector<Server>::iterator server = _servers.begin(); server != _servers.end(); server++) {
 		std::vector<Client> clients = server->getClients();
 		for (std::vector<Client>::iterator client = clients.begin(); client != clients.end(); client++) {
+			if (client->response.cgi.is_running)
+				server->stopCGI(*client);
 			server->closeClient(*client);
 		}
 		server->closeSocket();

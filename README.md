@@ -17,7 +17,7 @@ a static HTTP server
 - [x] Request init parameters map
 - [ ] Show port on << client overload
 - [x] Check uri (.., / at begin)
-- [ ] Close read pipe / kill (CGI) on ctrl+c
+- [x] Close read pipe / kill (CGI) on ctrl+c
 
 ## Known issue
 - [ ] Leak when socket initialization fail
