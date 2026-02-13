@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/12 21:30:17 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/12 21:38:35 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/13 23:05:30 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@
 # define RESPONSE_NOT_IMPLEMENTED				501
 # define RESPONSE_BAD_GATEWAY					502
 # define RESPONSE_SERVICE_UNAVAILABLE			503
+# define RESPONSE_GATEWAY_TIMEOUT				504
 # define RESPONSE_HTTP_VERSION_NOT_SUPPORTED	505
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/09 20:17:45 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/13 22:38:54 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/13 23:05:59 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ std::string Response::getStatusCodeText(int status_code) {
 	statusCodeTexts[RESPONSE_NOT_IMPLEMENTED] = "Not Implemented";
 	statusCodeTexts[RESPONSE_BAD_GATEWAY] = "Bad Gateway";
 	statusCodeTexts[RESPONSE_SERVICE_UNAVAILABLE] = "Service Unavailable";
+	statusCodeTexts[RESPONSE_GATEWAY_TIMEOUT] = "Gateway Timeout";
 	statusCodeTexts[RESPONSE_HTTP_VERSION_NOT_SUPPORTED] = "HTTP Version Not Supported";
 
 	std::string statusCodeText = statusCodeTexts[status_code];

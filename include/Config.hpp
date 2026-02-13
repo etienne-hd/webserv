@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/05 21:58:20 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/13 17:26:11 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/13 23:13:23 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,8 @@ class Config {
 			bool file_upload_enabled,
 			std::string file_upload_directory,
 			bool cgi_enabled,
-			std::map<std::string, std::string> cgi_rules
+			std::map<std::string, std::string> cgi_rules,
+			int cgi_timeout
 		);
 
 		static Config getConfig(JSONReader config);
@@ -59,6 +60,7 @@ class Config {
 		const std::string							file_upload_directory;
 		const bool									cgi_enabled;
 		const std::map<std::string, std::string>	cgi_rules;
+		const int									cgi_timeout;
 
 		static std::vector<Config> getConfigs(std::string data);
 };

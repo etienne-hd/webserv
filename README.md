@@ -69,7 +69,8 @@ a static HTTP server
 				"extension": ".py",
 				"path": "/bin/python"
 			}
-		]
+		],
+		"cgi_timeout": 15 
 	}
 ]
 ```

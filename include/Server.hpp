@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/04 18:30:31 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/13 21:07:20 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/13 23:15:57 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,9 +79,10 @@ class Server {
 
 		bool readCGI(Client &client);
 		void onCGIOutput(Client &client);
+		void onCGITimeout(Client &client);
 		
 		bool onRequest(Client &client);
-
+		
 		void onKeepAliveTimeout(Client &client);
 
 		// exception

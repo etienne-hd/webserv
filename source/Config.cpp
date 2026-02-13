@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/07 20:49:43 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/09 19:47:03 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/13 23:13:01 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,8 @@ Config::Config(
 	bool file_upload_enabled,
 	std::string file_upload_directory,
 	bool cgi_enabled,
-	std::map<std::string, std::string> cgi_rules
+	std::map<std::string, std::string> cgi_rules,
+	int cgi_timeout
 ):
 name(name),
 keepalive_timeout(keepalive_timeout), 
@@ -48,7 +49,8 @@ file_on_directory(file_on_directory),
 file_upload_enabled(file_upload_enabled),
 file_upload_directory(file_upload_directory),
 cgi_enabled(cgi_enabled),
-cgi_rules(cgi_rules) {}
+cgi_rules(cgi_rules),
+cgi_timeout(cgi_timeout) {}
 
 Config Config::getConfig(JSONReader reader) {
 	const char *requiredKeys[] = {
@@ -91,6 +93,7 @@ Config Config::getConfig(JSONReader reader) {
 	std::string							file_upload_directory = ".";
 	bool								cgi_enabled = false;
 	std::map<std::string, std::string>	cgi_rules;
+	int									cgi_timeout = 15;
 
 	for (std::vector<std::string>::iterator key = keys.begin(); key != keys.end(); key++) {
 		if (*key == "name")
@@ -139,6 +142,8 @@ Config Config::getConfig(JSONReader reader) {
 			for (std::vector<JSONReader>::iterator value = values.begin(); value != values.end(); value++) {
 				cgi_rules[(*value)["extension"].toString()] = (*value)["path"].toString();
 			}
+		} else if (*key == "cgi_timeout") {
+			cgi_timeout = reader["cgi_timeout"].toInt();
 		} else {
 			throw std::runtime_error(std::string("Unknown key '") + *key + "'.");
 		}
@@ -159,7 +164,8 @@ Config Config::getConfig(JSONReader reader) {
 		file_upload_enabled,
 		file_upload_directory,
 		cgi_enabled,
-		cgi_rules
+		cgi_rules,
+		cgi_timeout
 	));
 }
 

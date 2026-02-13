@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 15:43:44 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/13 22:54:55 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/13 23:17:10 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 #include <cerrno>
 #include <cstdlib>
 #include <cstring>
+#include <ctime>
 #include <map>
 #include <stdexcept>
 #include <unistd.h>
@@ -88,6 +89,7 @@ Response Server::execCGI(Client &client, std::string path) {
 		}
 		close(fds[1]);
 		cgi.is_running = 1;
+		cgi.timeout = time(__null);
 		cgi.pid = pid;
 		cgi.fd = fds[0];
 	}
@@ -161,4 +163,11 @@ void Server::onCGIOutput(Client &client) {
 	CGI &cgi = client.response.cgi;
 	client.response = parseCGI(cgi.output);
 	sendResponse(client);
+}
+
+void Server::onCGITimeout(Client &client) {
+	// Kill process & close pipe
+	
+	client.response = this->getErrorResponse(504);
+	this->sendResponse(client);
 }

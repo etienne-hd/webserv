@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/07 22:51:27 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/13 22:29:41 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/13 23:17:35 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,8 +93,8 @@ void ServerManager::run(void) {
 						}
 						if (cgi.eof)
 							server->onCGIOutput(*client);
-					} else {
-						// check timeout
+					} else if (time(__null) > cgi.timeout + server->getConfig().cgi_timeout) {
+						server->onCGITimeout(*client);
 					}
 					continue;
 				}
