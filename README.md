@@ -3,7 +3,7 @@ a static HTTP server
 
 ## Todo
 - [x] Path resolver
-- [ ] CGI
+- [x] CGI
 - [x] Content-Type in headers
 - [x] Working HTTP Error (400, 404, 413, 429)
 - [x] Keep Alive Handler
