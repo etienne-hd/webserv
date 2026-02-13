@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/07 22:19:14 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/13 23:48:18 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/14 00:40:06 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,9 +110,12 @@ bool Server::onRequest(Client &client) {
 	else
 		response = this->getErrorResponse(RESPONSE_BAD_REQUEST);
 
+	std::string connectionType = request.headers["connection"];
+	
 	if (cgi.is_running == false)
 		sendResponse(client);
-	if (request.headers["connection"] == "keep-alive" || cgi.is_running == true)
+
+	if (connectionType == "keep-alive" || cgi.is_running == true)
 		return (false);
 	else
 		return (true);
