@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/10 15:23:44 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/12 22:06:40 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/13 14:50:37 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,7 +108,7 @@ Response Server::getFileResponse(const std::string path) {
 		response = this->getErrorResponse(RESPONSE_NOT_FOUND);
 	} else {
 		std::string content;
-		char buffer[8192];
+		char buffer[65536];
 		int byteReads;
 		
 		while (1) {
