@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/07 22:51:27 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/13 23:28:26 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/13 23:45:58 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,13 +93,13 @@ void ServerManager::run(void) {
 						}
 						if (cgi.eof)
 							server->onCGIOutput(*client);
-					} else if (time(__null) > cgi.timeout + server->config.cgi_timeout) {
+					} else if (time(__null) >= cgi.timeout + server->config.cgi_timeout) {
 						server->onCGITimeout(*client);
 					}
 					continue;
 				}
 
-				// Read segments, if pre_response_status_code is set don't read another segment
+				// Read client request
 				if (
 					FD_ISSET(client->socket, &read_fds) &&
 					request.pre_response_status_code == -1
@@ -117,9 +117,7 @@ void ServerManager::run(void) {
 					}
 				}
 
-				// If the number of segment is above 0 &&
-				// we can write into socket &&
-				// the request is completely read
+				// Request is ready
 				if (
 					request.segment_count > 0 &&
 					FD_ISSET(client->socket, &write_fds) &&
@@ -136,18 +134,20 @@ void ServerManager::run(void) {
 				// Check segment timeout
 				if (
 					request.segment_timeout != -1 && 
-					time(__null) > request.segment_timeout + 5
+					time(__null) >= request.segment_timeout + 5
 				) {
 					// If we can write, send a 408 Request Timeout
 					// Close client connection
 					if (FD_ISSET(client->socket, &write_fds))
 						server->onSegmentTimeout(*client);
 					clientToRemove.push_back(*client);
-					continue;
 				}
 				
 				// Keep Alive timeout
-				if (time(__null) > client->client_timeout + server->config.keepalive_timeout) {
+				else if (
+					client->client_timeout != -1 &&
+					time(__null) >= client->client_timeout + server->config.keepalive_timeout
+				) {
 					server->onKeepAliveTimeout(*client);
 					clientToRemove.push_back(*client);
 				}

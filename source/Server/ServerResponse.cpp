@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/10 15:23:44 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/13 23:27:21 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/13 23:35:39 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 #include "status_code.hpp"
 #include "utils.hpp"
 
+#include <cerrno>
 #include <cstring>
 #include <netinet/in.h>
 #include <sstream>
@@ -31,8 +32,10 @@ void Server::sendResponse(Client &client) {
 	std::string rawResponse = response.build();
 	client.resetIO();
 	if (send(client.socket, rawResponse.c_str(), rawResponse.length(), 0) == -1) {
+		logger << CRITICAL << "Unable to send response: " << std::strerror(errno);
 		throw std::runtime_error("Unable to send response");
 	}
+	client.client_timeout = time(__null);
 }
 
 Response Server::getResponse(Client &client) {

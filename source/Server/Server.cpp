@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/07 22:19:14 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/13 23:25:26 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/13 23:45:20 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,6 +80,9 @@ bool Server::onRequest(Client &client) {
 	Response &response = client.response;
 	CGI &cgi = response.cgi;
 
+	request.segment_timeout = -1;
+	client.client_timeout = -1;
+
 	if (request.pre_response_status_code != -1) {
 		response = this->getErrorResponse(request.pre_response_status_code);
 		sendResponse(client);
@@ -116,9 +119,8 @@ bool Server::onRequest(Client &client) {
 }
 
 void Server::onSegmentTimeout(Client &client) {
-	Response response;
 
-	response = getErrorResponse(408);
+	client.response = getErrorResponse(408);
 	sendResponse(client);
 	logger << INFO << client << " -> Segment timed out, connection closed." << ENDL; 
 }
