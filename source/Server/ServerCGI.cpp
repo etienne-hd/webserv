@@ -6,13 +6,12 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 15:43:44 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/13 22:45:03 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/13 22:54:55 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "CGI.hpp"
 #include "Logger.hpp"
-#include "Request.hpp"
 #include "Response.hpp"
 #include "Server.hpp"
 #include "status_code.hpp"

@@ -1,14 +1,14 @@
 [
 	{
-		"name": "cgi test",
+		"name": "cgi hello world",
 		"listen": "0.0.0.0:8080",
 		"locations": [
 			{
 				"uri": "/",
-				"path": "./examples/cgi_test/"
+				"path": "./examples/cgi_hello_world/"
 			}
 		],
-		"document_index": "/test.py",
+		"document_index": "/hello_world.py",
 		"allowed_methods": ["GET"],
 		"cgi_enabled": true,
 		"cgi_rules": [
