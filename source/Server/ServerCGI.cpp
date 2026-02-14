@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 15:43:44 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/14 16:21:47 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/14 17:36:58 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,7 +138,10 @@ static Response parseCGI(std::string &output) {
 		}
 
 		std::string value;
-		while (it != output.end() && !expectedToken(output, it, "\n")) {
+		while (
+			it != output.end() &&
+			!(expectedToken(output, it, "\n") || expectedToken(output, it, "\r\n"))
+		) {
 			value += *it;
 			it++;
 		}
