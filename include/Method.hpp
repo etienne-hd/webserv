@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/07 04:06:35 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/07 22:46:22 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/14 20:50:01 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,16 +17,16 @@
 
 enum Method {
 	GET,
-	//HEAD,
+	HEAD,
 	POST,
-	//PUT,
+	PUT,
 	DELETE,
-	//CONNECT,
-	//OPTIONS,
-	//TRACE,
-	//PATCH
+	CONNECT,
+	OPTIONS,
+	TRACE,
+	PATCH
 };
 
-Method getMethodFromString(const std::string &s);
+Method getMethodFromString(const std::string &rawMethod);
 
 #endif

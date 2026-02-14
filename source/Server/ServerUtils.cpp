@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/09 04:28:41 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/14 19:41:38 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/14 21:11:36 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,15 @@ std::string Server::locationResolver(std::string uri) const {
 }
 
 bool Server::isAllowedMethod(Method method) const {
+	const unsigned int handledMethod = (
+		(2 << GET) +
+		(2 << POST) +
+		(2 << DELETE)
+	);
+
+	if (!(handledMethod & (2 << method)))
+		return (false);
+
 	std::vector<Method>::const_iterator it = this->config.allowed_methods.begin();
 	for (; it != this->config.allowed_methods.end(); it++) {
 		if (*it == method)

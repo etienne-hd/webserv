@@ -22,7 +22,7 @@ a static HTTP server
 
 ## Known issue
 - [ ] Leak when socket initialization fail
-- [ ] Other method (PATCH, PUT) failed
+- [x] Other method (PATCH, PUT) failed
 
 ## Configuration
 ```json
