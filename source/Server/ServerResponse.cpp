@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/10 15:23:44 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/14 16:18:52 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/14 21:34:15 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,12 +95,16 @@ Response Server::getErrorResponse(int status_code) {
 	response.status_code = status_code;
 	std::map<int, std::string> error_pages = this->config.error_pages;
 	response.content_type = "text/html";
-	if (error_pages.find(status_code) == error_pages.end())
-		response.content = getDefaultErrorContent(status_code);
-	else {
+	if (error_pages.find(status_code) != error_pages.end()) {
 		std::string path = this->locationResolver(error_pages[status_code]);
-		response = this->getFileResponse(path);
-	}
+		if (access(path.c_str(), R_OK) == 0)
+			response = this->getFileResponse(path);
+		else {
+			logger << WARNING << "Provided error " << status_code << " page '" << path << "' cannot be read!" << ENDL;
+			response.content = getDefaultErrorContent(status_code);
+		}
+	} else
+		response.content = getDefaultErrorContent(status_code);
 	return (response);
 }
 

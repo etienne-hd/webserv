@@ -30,7 +30,7 @@ a static HTTP server
 	{
 		"name": "my awesome website",
 		"keepalive_timeout": 30,
-		"max_request_size": 8080,
+		"max_body_size": 8080,
 		"listen": "0.0.0.0:8080",
 		"locations": [
 			{
