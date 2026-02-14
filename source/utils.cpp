@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/08 19:58:41 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/14 19:50:45 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/14 20:32:18 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,6 +105,18 @@ std::string decimalToAddress(unsigned int rawAddress) {
 			address << ".";
 	}
 	return (address.str());
+}
+
+std::string decimalToPort(unsigned short rawPort) {
+	std::stringstream port;
+	unsigned short v;
+
+	v = 0;
+	for (unsigned int i = 0; i < 2; i++) {
+		v += (rawPort << ((1 - i) * 8)) >> i * 8;
+	}
+	port << v;
+	return (port.str());
 }
 
 bool isSamePath(std::string path1, std::string path2) {

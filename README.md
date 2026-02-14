@@ -15,7 +15,7 @@ a static HTTP server
 - [x] Default error page
 - [x] Better Read
 - [x] Request init parameters map
-- [ ] Show port on << client overload
+- [x] Show port on << client overload
 - [x] Check uri (.., / at begin)
 - [x] Close read pipe / kill (CGI) on ctrl+c
 - [x] CGI env variable

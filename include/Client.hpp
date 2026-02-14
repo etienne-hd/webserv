@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/09 04:44:28 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/13 22:26:00 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/14 20:23:11 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ class Client {
 		unsigned int	raw_address;
 		std::string		address;
 		unsigned short	raw_port;
+		std::string		port;
 		unsigned int	total_request;
 		long			client_timeout;
 
