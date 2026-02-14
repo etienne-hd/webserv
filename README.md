@@ -18,7 +18,7 @@ a static HTTP server
 - [ ] Show port on << client overload
 - [x] Check uri (.., / at begin)
 - [x] Close read pipe / kill (CGI) on ctrl+c
-- [ ] CGI env variable
+- [x] CGI env variable
 
 ## Known issue
 - [ ] Leak when socket initialization fail
