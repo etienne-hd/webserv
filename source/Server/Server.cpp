@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/07 22:19:14 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/14 00:40:06 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/14 21:24:04 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,10 +48,8 @@ int Server::initSocket(void) {
 }
 
 void Server::closeSocket(void) {
-	if (_socket == -1) {
-		logger << WARNING << "Unable to close socket: socket is not init." << ENDL;
+	if (_socket == -1)
 		return;
-	}
 	if (close(_socket) == -1)
 		logger << CRITICAL << "Syscall close return -1" << ENDL;
 	else {

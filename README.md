@@ -21,7 +21,7 @@ a static HTTP server
 - [x] CGI env variable
 
 ## Known issue
-- [ ] Leak when socket initialization fail
+- [x] Leak when socket initialization fail
 - [x] Other method (PATCH, PUT) failed
 
 ## Configuration

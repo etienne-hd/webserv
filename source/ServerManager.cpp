@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/07 22:51:27 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/14 15:53:52 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/14 21:24:26 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,15 +45,26 @@ void ServerManager::run(void) {
 
 	// Initialize Socket
 	logger << DEBUG << "Initializing servers socket..." << ENDL;
-	for (std::vector<Server>::iterator server = _servers.begin(); server != _servers.end(); server++) {
-		int serverSocket = server->initSocket();
-		FD_SET(serverSocket, &_master_fds);
+	try {
+		for (std::vector<Server>::iterator server = _servers.begin(); server != _servers.end(); server++) {
+			int serverSocket = server->initSocket();
+			FD_SET(serverSocket, &_master_fds);
+		}
+	} catch (std::exception &e) {
+		logger << ERROR << "Initialization failed: " << e.what() << ENDL;
+		for (std::vector<Server>::iterator server = _servers.begin(); server != _servers.end(); server++) {
+			server->closeSocket();
+		}
+		return ;
 	}
+	
 	logger << DEBUG << "Server(s) socket initialized!" << ENDL;
 	logger << INFO << "Server(s) successfully started! (Press CTRL+C to quit)" << ENDL;
 	for (std::vector<Server>::iterator server = _servers.begin(); server != _servers.end(); server++) {
 		logger << INFO << "'" << server->config.name << "'" " is running on " << "http://" << server->config.listen << ENDL;
 	}
+	
+	// main loop
 	while (isRunning) {
 		read_fds = _master_fds;
 		write_fds = _master_fds;
