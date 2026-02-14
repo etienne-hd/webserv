@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 15:43:44 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/14 18:16:53 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/14 20:11:19 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 #include "utils.hpp"
 
 #include <cerrno>
+#include <iterator>
 #include <signal.h>
 #include <cstdlib>
 #include <cstring>
@@ -59,7 +60,7 @@ Response Server::execCGI(Client &client, std::string path) {
 		response = this->getErrorResponse(RESPONSE_INTERNAL_SERVER_ERROR);
 	// File can be executed
 	else {
-		cgi.path = cgiExec + " " + path;
+		cgi.path = path;
 
 		int fds[2];
 		if (pipe(fds) == -1) {
@@ -82,12 +83,21 @@ Response Server::execCGI(Client &client, std::string path) {
 			argv[1] = path.c_str();
 			argv[2] = __null;
 			
+			// env
+			char * const *env = this->getCGIEnv(client);
+
 			dup2(fds[1], 1);
 			close(fds[0]);
-			if (execve(cgiExec.c_str(), (char * const *)argv, __null) == -1) {
+			if (execve(cgiExec.c_str(), (char * const *)argv, env) == -1) {
 				logger << ERROR << "Failed to execute CGI '" << cgiExec << "': " << std::strerror(errno) << ENDL;
 			}
+			// Free env
+			for (unsigned int i = 0; env[i]; i++) 
+				delete env[i];
+			delete [] env;
+			
 			close(fds[1]);
+			std::exit(0);
 		}
 		close(fds[1]);
 		cgi.is_running = 1;
@@ -204,4 +214,40 @@ void Server::stopCGI(Client &client) {
 	} else {
 		logger << DEBUG << client << " > CGI successfully stopped!" << ENDL;
 	}
+}
+
+char * const *Server::getCGIEnv(Client &client) {
+	std::map<std::string, std::string> variables;
+	
+	// define all env variable
+	variables["CONTENT_LENGTH"] = toString(client.request.headers.getContentLength());
+	variables["CONTENT_TYPE"] = client.request.headers["content-type"];
+	variables["GATEWAY_INTERFACE"] = "CGI/1.1";
+	variables["QUERY_STRING"] = client.request.raw_parameters;
+	variables["REMOTE_ADDR"] = client.address;
+	variables["REMOTE_HOST"] = "";
+	variables["REQUEST_METHOD"] = client.request.raw_method;
+	variables["SCRIPT_NAME"] = client.response.cgi.path;
+	variables["SERVER_NAME"] = client.request.headers.has("host") ? client.request.headers["host"] : getHostname();
+	variables["SERVER_PORT"] = this->getPort();
+	variables["SERVER_PROTOCOL"] = "HTTP/1.1";
+	variables["SERVER_SOFTWARE"] = "webserv/0.1";
+	// Request headers
+	for (Headers::const_iterator header = client.request.headers.begin(); header != client.request.headers.end(); header++) {
+		std::string key = header->first;
+		strToUpper(key);
+		variables["HTTP_" + key] = header->second;
+	}
+	
+	unsigned int length = std::distance(variables.begin(), variables.end());
+	char **env = new char *[length + 1];
+	unsigned int i = 0;
+	for (std::map<std::string, std::string>::iterator variable = variables.begin(); variable != variables.end(); variable++) {
+		std::string rawVariable = variable->first + "=" + variable->second;
+		env[i] = new char[rawVariable.length() + 1];
+		std::strcpy(env[i], rawVariable.c_str());
+		i++;
+	}
+	env[length] = __null;
+	return (env);
 }

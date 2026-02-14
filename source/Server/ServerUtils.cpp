@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/09 04:28:41 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/13 23:27:58 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/14 19:41:38 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,4 +70,11 @@ bool Server::isAllowedMethod(Method method) const {
 			break;
 	}
 	return (it != this->config.allowed_methods.end());
+}
+
+std::string Server::getPort(void) const {
+	unsigned long pos = this->config.listen.find(":");
+	if (pos == std::string::npos)
+		return ("");
+	return (std::string(this->config.listen.begin() + pos + 1, this->config.listen.end()));
 }

@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/08 19:58:41 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/13 21:25:26 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/14 19:50:45 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 #include <string>
 #include <fcntl.h>
 #include <sys/socket.h>
+#include <unistd.h>
 
 static unsigned short getPort(std::string interface) {
 	unsigned long portPos = interface.find(":");
@@ -138,6 +139,13 @@ void strToLower(std::string &s) {
 	}
 }
 
+void strToUpper(std::string &s) {
+	for (std::string::iterator it = s.begin(); it != s.end(); it++) {
+		if (*it >= 'a' && *it <= 'z')
+			*it -= 32;
+	}
+}
+
 std::string getFileExtension(const std::string &path) {
 	std::string extension;
 
@@ -167,4 +175,19 @@ bool expectedToken(std::string &s, std::string::iterator &it, std::string expect
 		return (1);
 	}
 	return (0);
+}
+
+std::string getHostname(void) {
+	int fd = open("/etc/hostname", O_RDONLY);
+	if (fd == -1)
+		return ("");
+	
+	char buffer[64 + 1]; // /etc/hostname return hostname + \n
+	int byteReads = read(fd, buffer, sizeof(buffer));
+	close(fd);
+	
+	if (byteReads < 0)
+		return ("");
+	else
+		return (std::string(buffer, byteReads - 1));
 }

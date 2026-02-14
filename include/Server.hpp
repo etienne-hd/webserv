@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/04 18:30:31 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/14 15:52:20 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/14 19:39:01 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,10 +79,13 @@ class Server {
 		bool onCGIOutput(Client &client);
 		void onCGITimeout(Client &client);
 		void stopCGI(Client &client);
+		char * const *getCGIEnv(Client &client);
 		
 		bool onRequest(Client &client);
 		
 		void onKeepAliveTimeout(Client &client);
+
+		std::string getPort(void) const;
 
 		// exception
 		class ClientDisconnected: public std::exception {
