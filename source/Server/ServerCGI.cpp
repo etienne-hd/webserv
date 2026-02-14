@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 15:43:44 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/14 00:15:40 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/14 15:53:45 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -160,10 +160,17 @@ static Response parseCGI(std::string &output) {
 	return (response);
 }
 
-void Server::onCGIOutput(Client &client) {
+// send cgi output to client
+// return true if connection != keep-alive (say to serverManager to remove client socket)
+bool Server::onCGIOutput(Client &client) {
 	CGI &cgi = client.response.cgi;
 	client.response = parseCGI(cgi.output);
+	
+	std::string connectionType = client.request.headers["connection"];
 	sendResponse(client);
+	if (connectionType != "keep-alive")
+		return (true);
+	return (false);
 }
 
 void Server::onCGITimeout(Client &client) {

@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/07 22:51:27 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/14 00:08:07 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/14 15:53:52 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,8 +92,10 @@ void ServerManager::run(void) {
 							server->stopCGI(*client);
 							FD_CLR(cgiFd, &_master_fds);
 						}
-						if (cgi.eof)
-							server->onCGIOutput(*client);
+						if (cgi.eof) {
+							if (server->onCGIOutput(*client))
+								clientToRemove.push_back(*client);
+						}
 					} else if (time(__null) >= cgi.timeout + server->config.cgi_timeout) {
 						server->onCGITimeout(*client);
 						FD_CLR(cgiFd, &_master_fds);
@@ -126,7 +128,8 @@ void ServerManager::run(void) {
 					server->isEndOfSegment(*client)
 				) {
 					if (server->onRequest(*client))
-						clientToRemove.push_back(*client);
+						clientToRemove.push_back(*client); // keep-alive or malformed request
+
 					// If CGI is running add read pipe to master fd
 					if (cgi.is_running) {
 						FD_SET(cgi.fd, &_master_fds);
