@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/10 15:23:44 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/13 23:35:39 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/14 16:18:52 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,6 @@ Response Server::getResponse(Client &client) {
 	std::string uri = request.uri;
 
 	if (this->isRedirection(uri)) {
-		std::map<std::string, std::string> redirections = this->config.redirections;
 		response.status_code = RESPONSE_MOVED_PERMANENTLY;
 		response.headers["Location"] = this->getRedirection(uri);
 		return (response);
@@ -108,29 +107,35 @@ Response Server::getErrorResponse(int status_code) {
 Response Server::getFileResponse(const std::string path) {
 	Response response;
 
-	int fd = open(path.c_str(), O_RDONLY);
-	if (fd == -1) {
+	if (access(path.c_str(), F_OK) != 0)
 		response = this->getErrorResponse(RESPONSE_NOT_FOUND);
-	} else {
-		std::string content;
-		char buffer[65536];
-		int byteReads;
-		
-		while (1) {
-			byteReads = read(fd, buffer, sizeof(buffer));
-			if (byteReads <= 0)
-				break;
-			content += std::string(buffer, byteReads);
-		}
-		if (byteReads == -1) {
-			logger << ERROR << "Read error: " << std::strerror(errno) << ENDL;
+	else if (access(path.c_str(), R_OK) != 0)
+		response = this->getErrorResponse(RESPONSE_INTERNAL_SERVER_ERROR);
+	else {
+		int fd = open(path.c_str(), O_RDONLY);
+		if (fd == -1) {
 			response = this->getErrorResponse(RESPONSE_INTERNAL_SERVER_ERROR);
 		} else {
-			response.status_code = RESPONSE_OK;
-			response.content = content;
-			response.setContentTypeByPath(path);
+			std::string content;
+			char buffer[65536];
+			int byteReads;
+			
+			while (1) {
+				byteReads = read(fd, buffer, sizeof(buffer));
+				if (byteReads <= 0)
+					break;
+				content += std::string(buffer, byteReads);
+			}
+			if (byteReads == -1) {
+				logger << CRITICAL << "read error: " << std::strerror(errno) << ENDL;
+				response = this->getErrorResponse(RESPONSE_INTERNAL_SERVER_ERROR);
+			} else {
+				response.status_code = RESPONSE_OK;
+				response.content = content;
+				response.setContentTypeByPath(path);
+			}
+			close(fd);
 		}
-		close(fd);
 	}
 	return (response);
 }
