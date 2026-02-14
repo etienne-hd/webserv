@@ -1,0 +1,23 @@
+[
+	{
+		"name": "cgi redirection",
+		"listen": "0.0.0.0:8080",
+		"locations": [
+			{
+				"uri": "/",
+				"path": "./examples/cgi_redirection/"
+			}
+		],
+		"document_index": "/get_random_file.py",
+		"allowed_methods": ["GET", "POST", "DELETE"],
+		"cgi_enabled": true,
+		"cgi_rules": [
+			{
+				"extension": ".py",
+				"path": "/bin/python3"
+			}
+		],
+		"file_upload_directory": "/files",
+		"directory_listing_enabled": true
+	}
+]

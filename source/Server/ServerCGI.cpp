@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 15:43:44 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/14 16:06:15 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/14 16:21:47 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -156,6 +156,9 @@ static Response parseCGI(std::string &output) {
 		response.headers.erase("Status");
 	} else {
 		response.status_code = 200;
+	}
+	if (response.headers.has("Location")) {
+		response.status_code = RESPONSE_MOVED_PERMANENTLY;
 	}
 
 	return (response);
