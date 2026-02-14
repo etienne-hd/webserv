@@ -1,0 +1,21 @@
+[
+	{
+		"name": "cgi current time",
+		"listen": "0.0.0.0:8080",
+		"locations": [
+			{
+				"uri": "/",
+				"path": "./examples/cgi_current_time/"
+			}
+		],
+		"document_index": "/current_time.py",
+		"allowed_methods": ["GET"],
+		"cgi_enabled": true,
+		"cgi_rules": [
+			{
+				"extension": ".py",
+				"path": "/bin/python3"
+			}
+		]
+	}
+]
