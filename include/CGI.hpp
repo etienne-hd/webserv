@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 18:53:27 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/13 23:14:08 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/14 16:04:01 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ class CGI {
 		std::string	output;
 		long		timeout;
 		bool		eof;
+		std::string	path;
 
 		CGI(void);
 };

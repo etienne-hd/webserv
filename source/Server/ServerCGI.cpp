@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 15:43:44 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/14 15:53:45 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/14 16:06:15 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,8 +59,9 @@ Response Server::execCGI(Client &client, std::string path) {
 		response = this->getErrorResponse(RESPONSE_INTERNAL_SERVER_ERROR);
 	// File can be executed
 	else {
+		cgi.path = cgiExec + " " + path;
+
 		int fds[2];
-		
 		if (pipe(fds) == -1) {
 			logger << CRITICAL << "Unable to open pipe: " << std::strerror(errno) << ENDL;
 			response = this->getErrorResponse(RESPONSE_INTERNAL_SERVER_ERROR);
@@ -163,11 +164,15 @@ static Response parseCGI(std::string &output) {
 // send cgi output to client
 // return true if connection != keep-alive (say to serverManager to remove client socket)
 bool Server::onCGIOutput(Client &client) {
-	CGI &cgi = client.response.cgi;
-	client.response = parseCGI(cgi.output);
+	if (!client.response.cgi.output.empty()) {
+		client.response = parseCGI(client.response.cgi.output);
+	} else {
+		logger << WARNING << client << " > CGI output is empty! (" << client.response.cgi.path << ")" << ENDL;
+		client.response = this->getErrorResponse(500);
+	}
 	
 	std::string connectionType = client.request.headers["connection"];
-	sendResponse(client);
+	this->sendResponse(client);
 	if (connectionType != "keep-alive")
 		return (true);
 	return (false);
@@ -176,7 +181,7 @@ bool Server::onCGIOutput(Client &client) {
 void Server::onCGITimeout(Client &client) {
 	this->stopCGI(client);
 	
-	logger << WARNING << client << " > CGI timed out" << ENDL;
+	logger << WARNING << client << " > CGI timed out (" << client.response.cgi.path << ")" << ENDL;
 	client.response = this->getErrorResponse(504);
 	this->sendResponse(client);
 }

@@ -1,0 +1,21 @@
+[
+	{
+		"name": "cgi no output",
+		"listen": "0.0.0.0:8080",
+		"locations": [
+			{
+				"uri": "/",
+				"path": "./examples/cgi_no_output/"
+			}
+		],
+		"document_index": "/no_output.py",
+		"allowed_methods": ["GET"],
+		"cgi_enabled": true,
+		"cgi_rules": [
+			{
+				"extension": ".py",
+				"path": "/bin/python3"
+			}
+		]
+	}
+]
