@@ -1,0 +1,44 @@
+[
+	{
+		"name": "cgi multiple",
+		"listen": "0.0.0.0:8080",
+		"locations": [
+			{
+				"uri": "/",
+				"path": "./examples/cgi_multiple/"
+			}
+		],
+		"document_index": "/",
+		"allowed_methods": ["GET"],
+		"cgi_enabled": true,
+		"cgi_rules": [
+			{
+				"extension": ".py",
+				"path": "/bin/python3"
+			},
+			{
+				"extension": ".sh",
+				"path": "/bin/sh"
+			},
+			{
+				"extension": ".pl",
+				"path": "/bin/perl"
+			},
+			{
+				"extension": ".php",
+				"path": "/bin/php-cgi"
+			},
+			{
+				"extension": ".vala",
+				"path": "/bin/vala"
+			}
+		],
+		"redirections": [
+			{
+				"uri": "/",
+				"redirect": "/CGIs"
+			}
+		],
+		"directory_listing_enabled": true
+	}
+]
