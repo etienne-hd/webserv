@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/07 22:51:27 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/14 21:24:26 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/15 15:12:49 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,12 +138,17 @@ void ServerManager::run(void) {
 					FD_ISSET(client->socket, &write_fds) &&
 					server->isEndOfSegment(*client)
 				) {
-					if (server->onRequest(*client))
-						clientToRemove.push_back(*client); // keep-alive or malformed request
-
-					// If CGI is running add read pipe to master fd
-					if (cgi.is_running) {
-						FD_SET(cgi.fd, &_master_fds);
+					try {
+						if (server->onRequest(*client))
+							clientToRemove.push_back(*client); // keep-alive not present or malformed request
+	
+						// If CGI is running add read pipe to master fd
+						if (cgi.is_running) {
+							FD_SET(cgi.fd, &_master_fds);
+						}
+					} catch (std::exception &e) {
+						logger << ERROR << e.what() << ENDL;
+						clientToRemove.push_back(*client);
 					}
 				}
 				
