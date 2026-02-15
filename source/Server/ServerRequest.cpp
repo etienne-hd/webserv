@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/12 19:55:28 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/15 19:35:09 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/15 20:14:46 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,19 +143,6 @@ static void parseRequest(Request &request, std::string rawSegment) {
 	request.content = currentToken;
 	initParameters(request);
 	initUri(request);
-}
-
-static bool isValidUri(std::string uri) {
-	if (uri[0] != '/')
-		return (false);
-
-	std::stringstream ss(uri);
-	std::string part;
-	while (getline(ss, part, '/')) {
-		if (part == "..")
-			return (false);
-	}
-	return (true);
 }
 
 // Receive the first segment, it check the headers and verify that the request is correctly formatted

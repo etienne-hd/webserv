@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/08 19:58:41 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/14 20:32:18 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/15 20:15:12 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -202,4 +202,17 @@ std::string getHostname(void) {
 		return ("");
 	else
 		return (std::string(buffer, byteReads - 1));
+}
+
+bool isValidUri(std::string uri) {
+	if (uri[0] != '/')
+		return (false);
+
+	std::stringstream ss(uri);
+	std::string part;
+	while (getline(ss, part, '/')) {
+		if (part == "..")
+			return (false);
+	}
+	return (true);
 }

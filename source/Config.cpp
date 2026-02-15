@@ -6,15 +6,17 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/07 20:49:43 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/13 23:13:01 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/15 20:19:33 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Config.hpp"
 #include "JSONReader.hpp"
 #include "Method.hpp"
+#include "utils.hpp"
 
 #include <exception>
+#include <map>
 #include <stdexcept>
 #include <vector>
 
@@ -56,7 +58,6 @@ Config Config::getConfig(JSONReader reader) {
 	const char *requiredKeys[] = {
 		"name",
 		"listen",
-		"locations",
 		NULL
 	};
 	std::vector<std::string> keys = reader.keys();
@@ -79,8 +80,8 @@ Config Config::getConfig(JSONReader reader) {
 	std::map<std::string, std::string>	locations;
 	
 	unsigned int						keepalive_timeout = 30;
-	unsigned int						max_body_size = 32768;
-	std::string							document_index = "index.html";
+	unsigned int						max_body_size = 32000;
+	std::string							document_index = "/index.html";
 	std::map<int, std::string>			error_pages;
 	std::vector<Method>					allowed_methods;
 	allowed_methods.push_back(GET);
@@ -88,9 +89,9 @@ Config Config::getConfig(JSONReader reader) {
 	allowed_methods.push_back(DELETE);
 	std::map<std::string, std::string>	redirections;
 	bool								directory_listing_enabled = false;
-	std::string							file_on_directory = "directory.html";
+	std::string							file_on_directory = "/directory.html";
 	bool								file_upload_enabled = false;
-	std::string							file_upload_directory = ".";
+	std::string							file_upload_directory = "/";
 	bool								cgi_enabled = false;
 	std::map<std::string, std::string>	cgi_rules;
 	int									cgi_timeout = 15;
@@ -148,6 +149,21 @@ Config Config::getConfig(JSONReader reader) {
 			throw std::runtime_error(std::string("Unknown key '") + *key + "'.");
 		}
 	}
+
+	for (std::map<std::string, std::string>::iterator location = locations.begin(); location != locations.end(); location++) {
+		if (!isValidUri(location->first))
+			throw std::runtime_error("Invalid uri");
+	}
+	if (!isValidUri(document_index))
+		throw std::runtime_error("Invalid uri");
+	for (std::map<int, std::string>::iterator error_page = error_pages.begin(); error_page != error_pages.end(); error_page++) {
+		if (!isValidUri(error_page->second))
+			throw std::runtime_error("Invalid uri");
+	}
+	if (!isValidUri(file_on_directory))
+		throw std::runtime_error("Invalid uri");
+	if (!isValidUri(file_upload_directory))
+		throw std::runtime_error("Invalid uri");
 
 	return (Config(
 		name,

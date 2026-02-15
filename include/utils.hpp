@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/08 19:56:16 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/14 20:24:19 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/15 20:15:05 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ std::string getFileExtension(const std::string &path);
 void removeDuplicateSlash(std::string &s);
 bool expectedToken(std::string &s, std::string::iterator &it, std::string expectedToken);
 std::string getHostname(void);
+bool isValidUri(std::string uri);
 
 template <typename T>
 std::string toString(T v) {
