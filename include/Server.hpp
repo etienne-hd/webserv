@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/04 18:30:31 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/14 19:39:01 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/15 17:59:16 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ class Server {
 		bool onCGIOutput(Client &client);
 		void onCGITimeout(Client &client);
 		void stopCGI(Client &client);
-		char * const *getCGIEnv(Client &client);
+		char * const *getCGIEnv(Client &client, std::string file);
 		
 		bool onRequest(Client &client);
 		

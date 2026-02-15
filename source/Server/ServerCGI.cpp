@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 15:43:44 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/14 20:11:19 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/15 17:59:24 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,15 +17,9 @@
 #include "status_code.hpp"
 #include "utils.hpp"
 
-#include <cerrno>
-#include <iterator>
 #include <signal.h>
 #include <cstdlib>
 #include <cstring>
-#include <ctime>
-#include <map>
-#include <stdexcept>
-#include <unistd.h>
 
 bool Server::isCGI(std::string path) {
 	std::string extension = getFileExtension(path);
@@ -43,6 +37,23 @@ std::string Server::getCGI(std::string path) {
 			return (it->second);
 	}
 	throw std::runtime_error("Unable to find CGI");
+}
+
+static std::string initWorkingDirectory(std::string path) {
+	int i = path.length();
+	while (i >= 0) {
+		if (path[i] == '/')
+			break;
+		i--;
+	}
+	std::string file = std::string(path, i + 1);
+	std::string folder = std::string(path.begin(), path.begin() + i);
+	if (!folder.empty()) {
+		if (chdir(folder.c_str()) == -1) {
+			logger << ERROR << "chdir failed: " << strerror(errno) << ENDL;
+		}
+	}
+	return (file);
 }
 
 Response Server::execCGI(Client &client, std::string path) {
@@ -75,16 +86,18 @@ Response Server::execCGI(Client &client, std::string path) {
 			response = this->getErrorResponse(RESPONSE_INTERNAL_SERVER_ERROR);
 			return (response);
 		}
-
+	
 		if (pid == 0) {
+			std::string file = initWorkingDirectory(path);
+
 			// Exec args
 			const char *argv[3];
 			argv[0] = cgiExec.c_str();
-			argv[1] = path.c_str();
+			argv[1] = file.c_str();
 			argv[2] = __null;
 			
 			// env
-			char * const *env = this->getCGIEnv(client);
+			char * const *env = this->getCGIEnv(client, file);
 
 			dup2(fds[1], 1);
 			close(fds[0]);
@@ -216,7 +229,7 @@ void Server::stopCGI(Client &client) {
 	}
 }
 
-char * const *Server::getCGIEnv(Client &client) {
+char * const *Server::getCGIEnv(Client &client, std::string file) {
 	std::map<std::string, std::string> variables;
 	
 	// define all env variable
@@ -227,7 +240,7 @@ char * const *Server::getCGIEnv(Client &client) {
 	variables["REMOTE_ADDR"] = client.address;
 	variables["REMOTE_HOST"] = "";
 	variables["REQUEST_METHOD"] = client.request.raw_method;
-	variables["SCRIPT_NAME"] = client.response.cgi.path;
+	variables["SCRIPT_NAME"] = file;
 	variables["SERVER_NAME"] = client.request.headers.has("host") ? client.request.headers["host"] : getHostname();
 	variables["SERVER_PORT"] = this->getPort();
 	variables["SERVER_PROTOCOL"] = "HTTP/1.1";
