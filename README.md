@@ -37,14 +37,14 @@ a static HTTP server
 		"locations": [
 			{
 				"uri": "/",
-				"path": "./path/to/location"
+				"path": "/path/to/location"
 			},
 			{
 				"uri": "/error",
-				"path": "./path/to/location/error"
+				"path": "/path/to/location/error"
 			}
 		],
-		"document_index": "index.html",
+		"document_index": "/index.html",
 		"error_pages": [
 			{
 				"error_code": 404,
@@ -65,7 +65,7 @@ a static HTTP server
 		"directory_listing_enabled": true,
 		"file_on_directory": "/file_on_directory.html",
 		"file_upload_enabled": true,
-		"file_upload_directory": "./files",
+		"file_upload_directory": "/files",
 		"cgi_enabled": true,
 		"cgi_rules": [
 			{
