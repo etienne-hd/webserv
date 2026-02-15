@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/09 04:28:41 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/15 19:35:29 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/15 20:04:21 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,8 +50,11 @@ std::string Server::locationResolver(std::string uri) const {
 		}
 		++locations;
 	}
-	if (closest.empty())
-		return ("." + uri);
+	if (closest.empty()) {
+		logger << uri << ENDL;
+		logger << WARNING << "No location match with '" << uri << "'." << ENDL;
+		return (uri);
+	}
 	std::string subUri = uri.substr(closest.length(), uri.length());
 	std::string path = locationsMap[closest] + (subUri[0] != '/' ? "/" : "") + subUri;
 	removeDuplicateSlash(path);
