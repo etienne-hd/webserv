@@ -20,7 +20,7 @@ a static HTTP server
 - [x] Close read pipe / kill (CGI) on ctrl+c
 - [x] CGI env variable
 - [x] chdir before calling CGI
-- [ ] put all status code
+- [x] put all status code
 
 ## Known issue
 - [x] Leak when socket initialization fail
