@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/07 20:49:43 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/15 20:19:33 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/15 20:27:27 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,7 +115,7 @@ Config Config::getConfig(JSONReader reader) {
 		else if (*key == "error_pages") {
 			std::vector<JSONReader> values = reader["error_pages"].values();
 			for (std::vector<JSONReader>::iterator value = values.begin(); value != values.end(); value++) {
-				error_pages[(*value)["error_code"].toInt()] = (*value)["path"].toString();
+				error_pages[(*value)["error_code"].toInt()] = (*value)["uri"].toString();
 			}
 		} else if (*key == "allowed_methods") {
 			allowed_methods.clear();

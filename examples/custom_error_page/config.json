@@ -13,7 +13,7 @@
 		"error_pages": [
 			{
 				"error_code": 404,
-				"path": "/error/404.html"
+				"uri": "/error/404.html"
 			}
 		]
 	}

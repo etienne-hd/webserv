@@ -48,11 +48,11 @@ a static HTTP server
 		"error_pages": [
 			{
 				"error_code": 404,
-				"path": "/error/404.html"
+				"uri": "/error/404.html"
 			},
 			{
 				"error_code": 429,
-				"path": "/error/429.html"
+				"uri": "/error/429.html"
 			}
 		],
 		"allowed_methods": ["GET", "POST"],
