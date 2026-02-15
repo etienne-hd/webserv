@@ -1,0 +1,22 @@
+[
+	{
+		"name": "button clicker",
+		"listen": "0.0.0.0:8080",
+		"locations": [
+			{
+				"uri": "/",
+				"path": "./examples/button_clicker/"
+			}
+		],
+		"document_index": "/clicker.py",
+		"allowed_methods": ["GET"],
+		"cgi_enabled": true,
+		"cgi_rules": [
+			{
+				"extension": ".py",
+				"path": "/bin/python3"
+			}
+		],
+		"cgi_timeout": 15
+	}
+]
