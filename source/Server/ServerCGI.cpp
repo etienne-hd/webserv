@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 15:43:44 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/15 17:59:24 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/15 18:33:37 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,11 +106,12 @@ Response Server::execCGI(Client &client, std::string path) {
 			}
 			// Free env
 			for (unsigned int i = 0; env[i]; i++) 
-				delete env[i];
+				delete [] env[i];
 			delete [] env;
 			
 			close(fds[1]);
-			std::exit(0);
+			close(1);
+			throw Server::CGIError();
 		}
 		close(fds[1]);
 		cgi.is_running = 1;

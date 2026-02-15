@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/07 22:51:27 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/15 15:12:49 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/15 18:28:00 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,6 +146,9 @@ void ServerManager::run(void) {
 						if (cgi.is_running) {
 							FD_SET(cgi.fd, &_master_fds);
 						}
+					} catch (Server::CGIError &e) {
+						this->closeServers();
+						return ;
 					} catch (std::exception &e) {
 						logger << ERROR << e.what() << ENDL;
 						clientToRemove.push_back(*client);

@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/04 18:30:31 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/15 17:59:16 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/15 18:17:49 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,6 +93,9 @@ class Server {
 		};
 		class BadRequest: public std::exception {
 			virtual const char *what(void) const throw() { return "Request is not a valid HTTP Request."; }
+		};
+		class CGIError: public std::exception {
+			virtual const char *what(void) const throw() { return "Unable to run CGI."; }
 		};
 };
 
