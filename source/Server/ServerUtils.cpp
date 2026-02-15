@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/09 04:28:41 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/14 21:11:36 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/15 19:35:29 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,6 @@
 #include "Server.hpp"
 #include "utils.hpp"
 #include "Logger.hpp"
-
-#include <stdexcept>
-#include <sys/socket.h>
-#include <unistd.h>
 
 bool Server::isRedirection(std::string uri) const {
 	for (std::map<std::string, std::string>::const_iterator redirection = this->config.redirections.begin(); redirection != this->config.redirections.end(); ++redirection) {

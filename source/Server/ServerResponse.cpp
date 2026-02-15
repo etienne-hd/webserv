@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/10 15:23:44 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/14 21:34:15 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/15 19:35:23 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,12 +17,8 @@
 #include "status_code.hpp"
 #include "utils.hpp"
 
-#include <cerrno>
 #include <cstring>
-#include <netinet/in.h>
-#include <sstream>
 #include <unistd.h>
-#include <dirent.h>
 #include <fcntl.h>
 
 void Server::sendResponse(Client &client) {

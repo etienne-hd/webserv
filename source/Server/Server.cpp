@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/07 22:19:14 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/14 21:24:04 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/15 19:34:53 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,13 +19,7 @@
 #include "utils.hpp"
 #include "Logger.hpp"
 
-#include <dirent.h>
-#include <map>
-#include <netinet/in.h>
-#include <stdexcept>
-#include <sys/socket.h>
 #include <unistd.h>
-#include <vector>
 
 Server::Server(const Config config): config(config) {
 	_socket = -1;

@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/12 19:55:28 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/13 23:49:44 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/15 19:35:09 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,6 @@
 #include "status_code.hpp"
 #include "utils.hpp"
 
-#include <exception>
-#include <sys/socket.h>
 #include <cstring>
 
 std::string Server::receiveSegment(Client &client) {
