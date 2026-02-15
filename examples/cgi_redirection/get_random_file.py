@@ -10,7 +10,7 @@ def send_cgi(content: str = "", headers: dict = {}) -> None:
 	print(response, end="")
 
 def main() -> None:
-	files = os.listdir("examples/cgi_redirection/files")
+	files = os.listdir("files")
 	if (len(files) == 0):
 		send_cgi(
 			content="<html><body><h2>No file</h2></body></html>",
@@ -23,7 +23,7 @@ def main() -> None:
 		file = random.choice(files)
 		send_cgi(
 			headers={
-				"Location": os.path.join("/files", file),
+				"Location": os.path.join("files", file),
 				"Cache-Control": "no-cache"
 			}
 		)
