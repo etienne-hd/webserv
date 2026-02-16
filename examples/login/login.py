@@ -1,5 +1,7 @@
 import time
 import os
+import hashlib
+import json
 
 def send_cgi(content: str, headers: dict = {}) -> None:
 	response = ""
@@ -8,6 +10,28 @@ def send_cgi(content: str, headers: dict = {}) -> None:
 	response += "\n"
 	response += content
 	print(response, end="")
+
+def add_token(username: str, token: str) -> None:
+	db = {}
+	try:
+		with open("database.json", "r") as f:
+			db = json.load(f)
+	except:
+		pass
+	if username in db:
+		db[username].append(token)
+	else:
+		db[username] = [token]
+	with open("database.json", "w") as f:
+		json.dump(db, f)
+
+def get_db() -> dict:
+	try:
+		with open("database.json", "r") as f:
+			db = json.load(f)
+		return db
+	except:
+		return db
 
 def not_authenticated() -> tuple[str, dict]:
 	headers = {
@@ -49,32 +73,56 @@ def invalid_username() -> tuple[str, dict]:
 	return content, headers
 
 def login(username: str) -> tuple[str, dict]:
+	token = hashlib.md5(f"{username}{time.time()}".encode()).hexdigest()
+	add_token(username, token)
+
 	headers = {
 		"Content-Type": "text/html; charset=UTF-8",
-		"Set-Cookie": f"username={username}"
+		"Set-Cookie": f"token={token}"
 	}
 
-	content = already_logged(username)[0]
+	content = already_logged(token)[0]
 
 	return content, headers
 
-def already_logged(username: str) -> tuple[str, dict]:
+def already_logged(token: str) -> tuple[str, dict]:
 	headers = {
 		"Content-Type": "text/html; charset=UTF-8",
 	}
 
-	content = f"""
-	<html>
-		<body>
-			<p>Logged as {username}!</p>
+	db = get_db()
 
-			<form method="get" action="logout.py">
-				<button type="submit">Logout</button>
-			</form>
+	username = None
+	for c_username, tokens in db.items():
+		if token in tokens:
+			username = c_username
 
-		</body>
-	</html>
-	"""
+	if username:
+		content = f"""
+		<html>
+			<body>
+				<p>Logged as {username}!</p>
+
+				<form method="get" action="logout.py">
+					<button type="submit">Logout</button>
+				</form>
+
+			</body>
+		</html>
+		"""
+	else:
+		content = f"""
+		<html>
+			<body>
+				<p>Invalid Token!</p>
+
+				<form method="get" action="logout.py">
+					<button type="submit">Logout</button>
+				</form>
+
+			</body>
+		</html>
+		"""
 
 	return content, headers
 
@@ -104,8 +152,8 @@ def main() -> None:
 	cookies = get_cookies()
 	parameters = get_parameters()
 	
-	if "username" in cookies:
-		content, headers = already_logged(cookies["username"])
+	if "token" in cookies:
+		content, headers = already_logged(cookies["token"])
 	elif "username" in parameters:
 		if (parameters["username"].strip() == ""):
 			content, headers = invalid_username()
