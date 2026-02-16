@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/07 22:19:14 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/15 19:34:53 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/16 12:48:53 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,7 @@ bool Server::onRequest(Client &client) {
 		return (true);
 	}
 	
-	if (request.method == GET)
+	if (request.method == GET || (request.method == POST && this->isCGI(request.uri) && !this->config.file_upload_enabled))
 		response = this->getResponse(client); // Get file / folder
 	else if (request.method == POST)
 		response = this->getCreateFileResponse(request);
