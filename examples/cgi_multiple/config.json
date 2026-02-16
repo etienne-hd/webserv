@@ -23,14 +23,6 @@
 			{
 				"extension": ".pl",
 				"path": "/bin/perl"
-			},
-			{
-				"extension": ".php",
-				"path": "/bin/php-cgi"
-			},
-			{
-				"extension": ".vala",
-				"path": "/bin/vala"
 			}
 		],
 		"redirections": [
