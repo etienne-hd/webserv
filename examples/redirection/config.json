@@ -1,0 +1,20 @@
+[
+	{
+		"name": "redirection",
+		"listen": "0.0.0.0:8080",
+		"locations": [
+			{
+				"uri": "/",
+				"path": "./examples/redirection/"
+			}
+		],
+		"document_index": "/",
+		"allowed_methods": ["GET"],
+		"redirections": [
+			{
+				"uri": "/",
+				"redirect": "https://http.cat/"
+			}
+		]
+	}
+]
