@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/10 15:23:44 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/16 13:44:25 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/16 14:08:00 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,7 +146,7 @@ Response Server::getCreateFileResponse(Request &request) {
 	if (this->config.file_upload_enabled) {
 		std::string path = locationResolver(this->config.file_upload_directory) + request.uri;
 		logger << DEBUG << "Trying to create file at " << path << ENDL;
-		int fd = open(path.c_str(), O_WRONLY | O_CREAT, 0644);
+		int fd = open(path.c_str(), O_WRONLY | O_CREAT | O_TRUNC, 0644);
 		if (fd != -1) {
 			write(fd, request.content.c_str(), request.content.length());
 			response.status_code = RESPONSE_CREATED;
