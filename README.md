@@ -75,3 +75,5 @@ Below is a working configuration example:
   }
 ]
 ```
+
+![42](https://img.shields.io/badge/-42-black?style=for-the-badge&logo=42&logoColor=white)
