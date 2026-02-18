@@ -1,21 +1,10 @@
-*This project has been created as part of the 42 curriculum by ehode, ncorrear*
+# webserv [![wakatime](https://wakatime.com/badge/user/b5c6762d-cdfb-4336-9c84-87845f0e1976/project/aa5b5550-0e22-4976-a033-b70e71c28b60.svg)](https://wakatime.com/badge/user/b5c6762d-cdfb-4336-9c84-87845f0e1976/project/aa5b5550-0e22-4976-a033-b70e71c28b60)
 
-# Webserv
+*webserv is a 42 project: You must recreate a static web server (like nginx).*
 
-## Description
+- **125/100** ✅
 
-**Webserv** is a custom HTTP/1.1 web server written in C++ as part of the 42 curriculum.  
-The goal of this project is to understand how a real web server works internally by reimplementing its core features from scratch (similar in spirit to <entity type="organization">NGINX</entity> or <entity type="organization">Apache HTTP Server</entity>).
-
-This project focuses on:
-
-- Low-level network programming (sockets, bind, listen, accept)
-- Non-blocking I/O and multiplexing with select
-- HTTP request parsing and response generation
-- CGI execution
-- File handling and upload management
-
-The server is fully configurable via a JSON configuration file and supports multiple advanced HTTP features.
+![Illustration](/images/demo.png)
 
 ## Features
 
@@ -30,11 +19,10 @@ The server is fully configurable via a JSON configuration file and supports mult
 - CGI execution (e.g. Python scripts)
 - Configurable max body size
 - CGI timeout handling
+- Logger (DEBUG, INFO, WARNING, ERROR, CRITICAL)
+- File logging
 
----
-
-## Configuration Example
-
+## Configuration
 Below is a working configuration example:
 
 ```json
@@ -61,8 +49,8 @@ Below is a working configuration example:
         "uri": "/error/404.html"
       },
       {
-        "error_code": 429,
-        "uri": "/error/429.html"
+        "error_code": 500,
+        "uri": "/error/500.html"
       }
     ],
     "allowed_methods": ["GET", "POST"],
@@ -87,86 +75,3 @@ Below is a working configuration example:
   }
 ]
 ```
-
-## Instructions
-
-### Compilation
-
-```bash
-make
-```
-
-This will generate the executable:
-
-```bash
-./webserv
-```
-
-### Execution
-
-```bash
-./webserv config.json
-```
-
-### Accessing the Server
-
-Once running:
-
-```
-http://localhost:8080
-```
-
-You can test using:
-
-* Browser
-* `curl`
-* `telnet`
-* `ab`
-
-## Architecture Overview
-
-The server is based on:
-
-* Non-blocking sockets (`select`)
-* Event-driven architecture
-* One main loop handling:
-
-  * Incoming connections
-  * Request parsing
-  * Response building
-  * CGI execution
-  * Keep-alive lifecycle
-
----
-
-## Supported HTTP Methods
-
-* `GET`
-* `POST`
-* `DELETE`
-
-## Resources
-
-### HTTP & Networking
-
-* RFC 7230 – Hypertext Transfer Protocol (HTTP/1.1)
-* <entity type="organization">Mozilla Developer Network</entity> (MDN) – HTTP documentation
-  [https://developer.mozilla.org/en-US/docs/Web/HTTP](https://developer.mozilla.org/en-US/docs/Web/HTTP)
-* Beej’s Guide to Network Programming
-  [https://beej.us/guide/bgnet/](https://beej.us/guide/bgnet/)
-
-### Web Servers Reference
-
-* <entity type="organization">NGINX</entity> documentation
-  [https://nginx.org/en/docs/](https://nginx.org/en/docs/)
-* <entity type="organization">Apache HTTP Server</entity> documentation
-  [https://httpd.apache.org/docs/](https://httpd.apache.org/docs/)
-
-### CGI
-* CGI specification (RFC 3875)
-
----
-
-### AI
-
-We used it just to make this README.
