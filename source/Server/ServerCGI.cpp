@@ -6,7 +6,7 @@
 /*   By: ehode <ehode@student.42angouleme.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/13 15:43:44 by ehode             #+#    #+#             */
-/*   Updated: 2026/02/15 19:35:03 by ehode            ###   ########.fr       */
+/*   Updated: 2026/02/18 15:44:25 by ehode            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 #include <signal.h>
 #include <cstdlib>
 #include <cstring>
+#include <unistd.h>
 
 bool Server::isCGI(std::string path) {
 	std::string extension = getFileExtension(path);
